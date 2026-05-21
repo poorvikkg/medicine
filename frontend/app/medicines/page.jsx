@@ -19,22 +19,21 @@ export default function MedicinesPage() {
   }, [user, loading, router]);
 
   useEffect(() => {
-    if (user) {
-      medicineAPI.getForPatient(user._id)
-        .then((res) => setMedicines(res.data.medicines))
-        .catch(() => toast.error('Could not load medicines'))
-        .finally(() => setFetching(false));
-    }
+    if (!user) return;
+    medicineAPI.getForPatient(user._id)
+      .then(r => setMedicines(r.data.medicines))
+      .catch(() => toast.error('Could not load medicines.'))
+      .finally(() => setFetching(false));
   }, [user]);
 
   const handleDelete = async (id) => {
-    if (!confirm('Remove this medicine?')) return;
+    if (!confirm('Remove this medicine from the schedule?')) return;
     try {
       await medicineAPI.delete(id);
-      setMedicines((prev) => prev.filter((m) => m._id !== id));
-      toast.success('Medicine removed');
+      setMedicines(prev => prev.filter(m => m._id !== id));
+      toast.success('Medicine removed.');
     } catch {
-      toast.error('Could not remove medicine');
+      toast.error('Could not remove medicine.');
     }
   };
 
@@ -42,66 +41,74 @@ export default function MedicinesPage() {
 
   return (
     <AppShell title="My Medicines">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
-        <p style={{ color: 'var(--clr-text-muted)' }}>
-          {medicines.length} active medicine{medicines.length !== 1 ? 's' : ''} in your schedule
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
+        <p style={{ color: 'var(--clr-muted)', fontSize: '0.9rem' }}>
+          {medicines.length} active medicine{medicines.length !== 1 ? 's' : ''}
         </p>
         {isDoctor && (
-          <Link href="/medicines/add" className="btn btn-primary">
-            <Plus size={18} /> Add Medicine
+          <Link href="/medicines/add" className="btn btn-primary btn-sm">
+            <Plus size={15} /> Add Medicine
           </Link>
         )}
       </div>
 
-      <div className="disclaimer" style={{ marginBottom: 20 }}>
-        ⚕️ Always consult your doctor before changing any medication dosage or timing.
+      <div className="notice" style={{ marginBottom: 18 }}>
+        Consult your doctor before changing any medication dosage or timing.
       </div>
 
       {fetching ? (
         <div style={{ textAlign: 'center', padding: 60 }}><div className="spinner" /></div>
       ) : medicines.length === 0 ? (
-        <div className="card" style={{ textAlign: 'center', padding: 48 }}>
-          <Pill size={48} style={{ opacity: 0.2, marginBottom: 16 }} />
-          <h3>No medicines added yet</h3>
-          <p style={{ color: 'var(--clr-text-muted)', marginTop: 8 }}>
-            {isDoctor ? 'Click "Add Medicine" to get started.' : 'Your doctor will add your medicines here.'}
+        <div className="card" style={{ textAlign: 'center', padding: 48, color: 'var(--clr-muted)' }}>
+          <Pill size={40} style={{ opacity: 0.2, marginBottom: 12 }} />
+          <p style={{ fontWeight: 600 }}>No medicines scheduled</p>
+          <p style={{ fontSize: '0.88rem', marginTop: 4 }}>
+            {isDoctor ? 'Add a medicine to get started.' : 'Your doctor will add medicines to your schedule.'}
           </p>
         </div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          {medicines.map((med) => (
-            <div key={med._id} className="card" style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {medicines.map(med => (
+            <div key={med._id} className="card" style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
               {med.medicineImage ? (
                 <img src={med.medicineImage} alt={med.name} className="medicine-img" />
               ) : (
-                <div className="medicine-img-placeholder"><Pill size={30} /></div>
+                <div className="medicine-img-placeholder"><Pill size={26} /></div>
               )}
-              <div style={{ flex: 1 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8, marginBottom: 4 }}>
                   <h3 style={{ margin: 0 }}>{med.name}</h3>
                   {isDoctor && (
-                    <div style={{ display: 'flex', gap: 8 }}>
-                      <Link href={`/medicines/edit/${med._id}`} className="btn btn-ghost btn-sm"><Edit size={16} /></Link>
+                    <div style={{ display: 'flex', gap: 6 }}>
+                      <Link href={`/medicines/edit/${med._id}`} className="btn btn-ghost btn-sm">
+                        <Edit size={14} />
+                      </Link>
                       <button className="btn btn-ghost btn-sm" onClick={() => handleDelete(med._id)}
-                        style={{ color: 'var(--clr-danger)' }}><Trash2 size={16} /></button>
+                        style={{ color: 'var(--clr-danger)' }}>
+                        <Trash2 size={14} />
+                      </button>
                     </div>
                   )}
                 </div>
-                <p style={{ color: 'var(--clr-text-muted)', margin: '6px 0' }}>
-                  <strong>Dose:</strong> {med.dosage} &nbsp;|&nbsp; <strong>Form:</strong> {med.dosageUnit}
+                <p style={{ color: 'var(--clr-muted)', fontSize: '0.88rem', margin: '2px 0' }}>
+                  {med.dosage} · {med.dosageUnit}
                 </p>
                 {med.instructions && (
-                  <p style={{ fontSize: '0.9rem', color: 'var(--clr-text-muted)', margin: '4px 0' }}>📋 {med.instructions}</p>
+                  <p style={{ fontSize: '0.84rem', color: 'var(--clr-muted)', margin: '2px 0' }}>
+                    {med.instructions}
+                  </p>
                 )}
-                <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginTop: 8 }}>
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 8 }}>
                   {med.schedule?.map((slot, i) => (
-                    <span key={i} className="badge badge-info"><Clock size={11} /> {slot.time} ({slot.label})</span>
+                    <span key={i} className="badge badge-info">
+                      <Clock size={10} /> {slot.time} · {slot.label}
+                    </span>
                   ))}
                 </div>
-                <p style={{ fontSize: '0.85rem', color: 'var(--clr-text-subtle)', marginTop: 8 }}>
-                  <Calendar size={13} style={{ display: 'inline', marginRight: 4 }} />
-                  From {new Date(med.startDate).toLocaleDateString('en-IN')}
-                  {med.endDate ? ` — ${new Date(med.endDate).toLocaleDateString('en-IN')}` : ' (ongoing)'}
+                <p style={{ fontSize: '0.78rem', color: 'var(--clr-subtle)', marginTop: 6 }}>
+                  <Calendar size={11} style={{ display: 'inline', marginRight: 4 }} />
+                  {new Date(med.startDate).toLocaleDateString('en-IN')}
+                  {med.endDate ? ` — ${new Date(med.endDate).toLocaleDateString('en-IN')}` : ' · Ongoing'}
                 </p>
               </div>
             </div>

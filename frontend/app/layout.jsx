@@ -6,10 +6,8 @@ import { Toaster } from 'react-hot-toast';
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
 export const metadata = {
-  title: 'MediCare – Medicine Reminder & Verification',
-  description:
-    'AI-powered medicine reminder system for elderly patients. Get reminders, verify medicines with camera, and keep family informed.',
-  keywords: 'medicine reminder, elderly care, medication tracker, AI verification',
+  title: 'MediCare — Medicine Reminder System',
+  description: 'Medicine reminder and verification system for patients and caregivers.',
 };
 
 export default function RootLayout({ children }) {
@@ -21,15 +19,14 @@ export default function RootLayout({ children }) {
           <Toaster
             position="top-right"
             toastOptions={{
-              duration: 4000,
+              duration: 3500,
               style: {
-                fontSize: '1rem',
-                borderRadius: '8px',
-                padding: '14px 18px',
+                fontSize: '0.95rem',
+                borderRadius: '6px',
+                padding: '12px 16px',
                 fontFamily: 'var(--font-inter)',
+                boxShadow: '0 2px 12px rgba(0,0,0,0.12)',
               },
-              success: { style: { background: '#1a3a2a', color: '#fff', border: '1px solid #2d6a4f' } },
-              error: { style: { background: '#3a1a1a', color: '#fff', border: '1px solid #9b2226' } },
             }}
           />
         </AuthProvider>

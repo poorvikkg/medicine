@@ -6,10 +6,10 @@ import { useAuth } from '@/context/AuthContext';
 import toast from 'react-hot-toast';
 import { Eye, EyeOff } from 'lucide-react';
 
-const roles = [
-  { value: 'patient', label: '🧓 Patient' },
-  { value: 'doctor', label: '👨‍⚕️ Doctor / Admin' },
-  { value: 'caregiver', label: '🤝 Caregiver / Family' },
+const ROLES = [
+  { value: 'patient',   label: 'Patient' },
+  { value: 'doctor',    label: 'Doctor / Admin' },
+  { value: 'caregiver', label: 'Caregiver / Family' },
 ];
 
 export default function RegisterPage() {
@@ -24,16 +24,15 @@ export default function RegisterPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (form.password.length < 6) {
-      toast.error('Password must be at least 6 characters');
+      toast.error('Password must be at least 6 characters.');
       return;
     }
     setLoading(true);
     try {
       await register(form);
-      toast.success('Account created! Welcome to MediCare.');
       router.push('/dashboard');
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Registration failed. Please try again.');
+      toast.error(err.response?.data?.message || 'Registration failed.');
     } finally {
       setLoading(false);
     }
@@ -41,14 +40,21 @@ export default function RegisterPage() {
 
   return (
     <div className="auth-page">
-      <div className="auth-card fade-in" style={{ maxWidth: 480 }}>
-        <div style={{ textAlign: 'center', marginBottom: 28 }}>
-          <div style={{ fontSize: '2.5rem', marginBottom: 8 }}>💊</div>
-          <h1 style={{ fontSize: '1.8rem', color: 'var(--clr-primary)' }}>Create Account</h1>
-          <p style={{ color: 'var(--clr-text-muted)', marginTop: 4 }}>Join MediCare to manage medicines safely</p>
+      <div className="auth-card fade-in" style={{ maxWidth: 460 }}>
+        <div style={{ marginBottom: 26 }}>
+          <div style={{
+            fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em',
+            textTransform: 'uppercase', color: 'var(--clr-primary)', marginBottom: 8,
+          }}>
+            MediCare
+          </div>
+          <h1 style={{ fontSize: '1.6rem' }}>Create account</h1>
+          <p style={{ color: 'var(--clr-muted)', marginTop: 4, fontSize: '0.95rem' }}>
+            Set up your medicine management account
+          </p>
         </div>
 
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           <div className="form-group">
             <label className="form-label" htmlFor="name">Full Name</label>
             <input id="name" name="name" type="text" className="form-input"
@@ -56,47 +62,49 @@ export default function RegisterPage() {
           </div>
 
           <div className="form-group">
-            <label className="form-label" htmlFor="reg-email">Email Address</label>
+            <label className="form-label" htmlFor="reg-email">Email</label>
             <input id="reg-email" name="email" type="email" className="form-input"
-              placeholder="you@example.com" value={form.email} onChange={handleChange} required />
+              placeholder="name@example.com" value={form.email} onChange={handleChange} required />
           </div>
 
           <div className="form-group">
-            <label className="form-label" htmlFor="phone">Phone Number</label>
+            <label className="form-label" htmlFor="phone">Phone (optional)</label>
             <input id="phone" name="phone" type="tel" className="form-input"
               placeholder="+91 XXXXX XXXXX" value={form.phone} onChange={handleChange} />
           </div>
 
           <div className="form-group">
-            <label className="form-label" htmlFor="role">I am a…</label>
+            <label className="form-label" htmlFor="role">Role</label>
             <select id="role" name="role" className="form-input" value={form.role} onChange={handleChange}>
-              {roles.map((r) => (
-                <option key={r.value} value={r.value}>{r.label}</option>
-              ))}
+              {ROLES.map(r => <option key={r.value} value={r.value}>{r.label}</option>)}
             </select>
           </div>
 
           <div className="form-group">
             <label className="form-label" htmlFor="reg-password">Password</label>
             <div style={{ position: 'relative' }}>
-              <input id="reg-password" name="password" type={showPass ? 'text' : 'password'}
-                className="form-input" placeholder="Min. 6 characters"
-                value={form.password} onChange={handleChange} required style={{ paddingRight: 50 }} />
+              <input id="reg-password" name="password"
+                type={showPass ? 'text' : 'password'} className="form-input"
+                placeholder="Minimum 6 characters" value={form.password}
+                onChange={handleChange} required style={{ paddingRight: 46 }} />
               <button type="button" onClick={() => setShowPass(!showPass)}
-                style={{ position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)',
-                  background: 'none', border: 'none', cursor: 'pointer', color: 'var(--clr-text-muted)', padding: 0 }}>
-                {showPass ? <EyeOff size={20} /> : <Eye size={20} />}
+                style={{
+                  position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)',
+                  background: 'none', border: 'none', cursor: 'pointer',
+                  color: 'var(--clr-subtle)', display: 'flex', padding: 0,
+                }}>
+                {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
           </div>
 
           <button type="submit" className="btn btn-primary btn-full btn-lg"
-            disabled={loading} id="register-btn">
-            {loading ? 'Creating account…' : 'Create Account'}
+            disabled={loading} id="register-btn" style={{ marginTop: 4 }}>
+            {loading ? 'Creating account...' : 'Create Account'}
           </button>
         </form>
 
-        <p style={{ textAlign: 'center', marginTop: 24, color: 'var(--clr-text-muted)', fontSize: '0.95rem' }}>
+        <p style={{ textAlign: 'center', marginTop: 20, color: 'var(--clr-muted)', fontSize: '0.9rem' }}>
           Already have an account?{' '}
           <Link href="/login" style={{ color: 'var(--clr-primary)', fontWeight: 700 }}>Sign in</Link>
         </p>

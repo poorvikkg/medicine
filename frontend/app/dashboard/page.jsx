@@ -21,21 +21,19 @@ export default function DashboardPage() {
   }, [user, loading, router]);
 
   useEffect(() => {
-    if (user) {
-      dashboardAPI.getDashboard(user._id)
-        .then((res) => setData(res.data.dashboard))
-        .catch(() => toast.error('Could not load dashboard'))
-        .finally(() => setFetching(false));
-    }
+    if (!user) return;
+    dashboardAPI.getDashboard(user._id)
+      .then(r => setData(r.data.dashboard))
+      .catch(() => toast.error('Could not load dashboard data.'))
+      .finally(() => setFetching(false));
   }, [user]);
 
   const markTaken = async (logId) => {
     try {
       await logAPI.markTaken(logId);
-      toast.success('✅ Medicine marked as taken!');
-      // Refresh
-      const res = await dashboardAPI.getDashboard(user._id);
-      setData(res.data.dashboard);
+      toast.success('Marked as taken.');
+      const r = await dashboardAPI.getDashboard(user._id);
+      setData(r.data.dashboard);
     } catch {
       toast.error('Could not update. Please try again.');
     }
@@ -46,7 +44,6 @@ export default function DashboardPage() {
       <AppShell title="Dashboard">
         <div className="loading-screen" style={{ minHeight: '60vh' }}>
           <div className="spinner" />
-          <p style={{ color: 'var(--clr-text-muted)' }}>Loading your medicines…</p>
         </div>
       </AppShell>
     );
@@ -56,108 +53,73 @@ export default function DashboardPage() {
 
   return (
     <AppShell title="Dashboard">
-      {/* Greeting */}
-      <div className="card" style={{ marginBottom: 24, background: 'var(--clr-primary)', color: '#fff', border: 'none' }}>
-        <h2 style={{ color: '#fff', marginBottom: 4 }}>Good day, {user?.name?.split(' ')[0]} 👋</h2>
-        <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '1rem' }}>
-          Here is your medicine schedule for today.
-        </p>
-        <p className="disclaimer" style={{ marginTop: 12, background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.3)', color: '#fff' }}>
-          ⚕️ Always consult your doctor before changing any medication.
-        </p>
+      <div className="notice" style={{ marginBottom: 20 }}>
+        Always consult your doctor before making changes to your medication.
       </div>
 
-      {/* Stats */}
       <div className="stat-grid" style={{ marginBottom: 28 }}>
         <div className="stat-card">
           <div className="stat-value" style={{ color: 'var(--clr-primary)' }}>{upcoming.length}</div>
           <div className="stat-label">Upcoming</div>
-          <Clock size={20} color="var(--clr-primary)" style={{ marginTop: 4 }} />
         </div>
         <div className="stat-card">
           <div className="stat-value" style={{ color: 'var(--clr-success)' }}>{completed.length}</div>
           <div className="stat-label">Taken Today</div>
-          <CheckCircle2 size={20} color="var(--clr-success)" style={{ marginTop: 4 }} />
         </div>
         <div className="stat-card">
           <div className="stat-value" style={{ color: 'var(--clr-danger)' }}>{missed.length}</div>
           <div className="stat-label">Missed Today</div>
-          <XCircle size={20} color="var(--clr-danger)" style={{ marginTop: 4 }} />
         </div>
         <div className="stat-card">
           <div className="stat-value" style={{ color: 'var(--clr-warning)' }}>{recentAlerts.length}</div>
-          <div className="stat-label">Family Alerts</div>
-          <AlertTriangle size={20} color="var(--clr-warning)" style={{ marginTop: 4 }} />
+          <div className="stat-label">Active Alerts</div>
         </div>
       </div>
 
-      {/* Upcoming Medicines */}
       <div style={{ marginBottom: 28 }}>
         <div className="section-title">
-          <Clock size={22} color="var(--clr-primary)" />
-          Upcoming Medicines
+          <Clock size={15} /> Upcoming
         </div>
         {upcoming.length === 0 ? (
-          <div className="card-sm" style={{ color: 'var(--clr-text-muted)', textAlign: 'center', padding: 32 }}>
-            <Pill size={40} style={{ marginBottom: 12, opacity: 0.3 }} />
-            <p>No upcoming medicines right now. Great job! 🎉</p>
+          <div className="card" style={{ textAlign: 'center', padding: 36, color: 'var(--clr-muted)' }}>
+            <Pill size={36} style={{ marginBottom: 10, opacity: 0.25 }} />
+            <p>No upcoming medicines at this time.</p>
           </div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            {upcoming.map((log) => (
-              <MedicineCard
-                key={log._id}
-                log={log}
-                showActions
-                onTake={() => markTaken(log._id)}
-              />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {upcoming.map(log => (
+              <MedicineCard key={log._id} log={log} showActions onTake={() => markTaken(log._id)} />
             ))}
           </div>
         )}
       </div>
 
-      {/* Missed Medicines */}
       {missed.length > 0 && (
         <div style={{ marginBottom: 28 }}>
-          <div className="section-title">
-            <XCircle size={22} color="var(--clr-danger)" />
-            Missed Today
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            {missed.map((log) => (
-              <MedicineCard key={log._id} log={log} status="missed" />
-            ))}
+          <div className="section-title"><XCircle size={15} /> Missed Today</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {missed.map(log => <MedicineCard key={log._id} log={log} status="missed" />)}
           </div>
         </div>
       )}
 
-      {/* Completed */}
       {completed.length > 0 && (
         <div style={{ marginBottom: 28 }}>
-          <div className="section-title">
-            <CheckCircle2 size={22} color="var(--clr-success)" />
-            Taken Today
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            {completed.map((log) => (
-              <MedicineCard key={log._id} log={log} status="taken" />
-            ))}
+          <div className="section-title"><CheckCircle2 size={15} /> Taken Today</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {completed.map(log => <MedicineCard key={log._id} log={log} status="taken" />)}
           </div>
         </div>
       )}
 
-      {/* Verify CTA */}
-      <div className="card" style={{ textAlign: 'center', marginBottom: 24, border: '2px solid var(--clr-primary-light)' }}>
-        <h3 style={{ marginBottom: 8 }}>Not sure which tablet to take?</h3>
-        <p style={{ color: 'var(--clr-text-muted)', marginBottom: 16 }}>
-          Use our camera to verify your medicine before taking it.
-        </p>
-        <Link href="/verify" className="btn btn-primary btn-lg">
-          📷 Verify Medicine
-        </Link>
+      <div className="card" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
+        <div>
+          <h3 style={{ marginBottom: 4 }}>Not sure which tablet to take?</h3>
+          <p style={{ color: 'var(--clr-muted)', fontSize: '0.9rem' }}>Use the camera to verify your medicine before taking it.</p>
+        </div>
+        <Link href="/verify" className="btn btn-primary">Verify Medicine</Link>
       </div>
 
-      {/* Floating Voice Assistant */}
       <VoiceAssistant upcomingMeds={upcoming} />
     </AppShell>
   );

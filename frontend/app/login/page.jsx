@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import toast from 'react-hot-toast';
-import { Eye, EyeOff, Pill } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -20,10 +20,9 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await login(form.email, form.password);
-      toast.success('Welcome back!');
       router.push('/dashboard');
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Login failed. Please try again.');
+      toast.error(err.response?.data?.message || 'Invalid email or password.');
     } finally {
       setLoading(false);
     }
@@ -32,28 +31,28 @@ export default function LoginPage() {
   return (
     <div className="auth-page">
       <div className="auth-card fade-in">
-        {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: 32 }}>
-          <div style={{ fontSize: '2.5rem', marginBottom: 8 }}>💊</div>
-          <h1 style={{ fontSize: '1.8rem', color: 'var(--clr-primary)' }}>MediCare</h1>
-          <p style={{ color: 'var(--clr-text-muted)', marginTop: 4 }}>
-            Sign in to your medicine reminder account
+        <div style={{ marginBottom: 28 }}>
+          <div style={{
+            fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em',
+            textTransform: 'uppercase', color: 'var(--clr-primary)',
+            marginBottom: 8,
+          }}>
+            MediCare
+          </div>
+          <h1 style={{ fontSize: '1.6rem' }}>Sign in</h1>
+          <p style={{ color: 'var(--clr-muted)', marginTop: 4, fontSize: '0.95rem' }}>
+            Access your medicine dashboard
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
           <div className="form-group">
-            <label className="form-label" htmlFor="email">Email Address</label>
+            <label className="form-label" htmlFor="email">Email</label>
             <input
-              id="email"
-              name="email"
-              type="email"
-              className="form-input"
-              placeholder="you@example.com"
-              value={form.email}
-              onChange={handleChange}
-              required
-              autoComplete="email"
+              id="email" name="email" type="email"
+              className="form-input" placeholder="name@example.com"
+              value={form.email} onChange={handleChange}
+              required autoComplete="email"
             />
           </div>
 
@@ -61,52 +60,48 @@ export default function LoginPage() {
             <label className="form-label" htmlFor="password">Password</label>
             <div style={{ position: 'relative' }}>
               <input
-                id="password"
-                name="password"
+                id="password" name="password"
                 type={showPass ? 'text' : 'password'}
-                className="form-input"
-                placeholder="Enter your password"
-                value={form.password}
-                onChange={handleChange}
-                required
-                style={{ paddingRight: 50 }}
+                className="form-input" placeholder="Enter your password"
+                value={form.password} onChange={handleChange}
+                required style={{ paddingRight: 46 }}
               />
               <button
                 type="button"
                 onClick={() => setShowPass(!showPass)}
                 style={{
-                  position: 'absolute', right: 14, top: '50%',
+                  position: 'absolute', right: 12, top: '50%',
                   transform: 'translateY(-50%)',
                   background: 'none', border: 'none', cursor: 'pointer',
-                  color: 'var(--clr-text-muted)', padding: 0,
+                  color: 'var(--clr-subtle)', display: 'flex', padding: 0,
                 }}
                 aria-label={showPass ? 'Hide password' : 'Show password'}
               >
-                {showPass ? <EyeOff size={20} /> : <Eye size={20} />}
+                {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
           </div>
 
           <button
-            type="submit"
-            className="btn btn-primary btn-full btn-lg"
-            disabled={loading}
-            id="login-btn"
+            type="submit" className="btn btn-primary btn-full btn-lg"
+            disabled={loading} id="login-btn"
+            style={{ marginTop: 4 }}
           >
-            {loading ? 'Signing in…' : 'Sign In'}
+            {loading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
 
-        <p style={{ textAlign: 'center', marginTop: 24, color: 'var(--clr-text-muted)', fontSize: '0.95rem' }}>
-          Don&apos;t have an account?{' '}
+        <p style={{ textAlign: 'center', marginTop: 22, color: 'var(--clr-muted)', fontSize: '0.9rem' }}>
+          No account?{' '}
           <Link href="/register" style={{ color: 'var(--clr-primary)', fontWeight: 700 }}>
-            Register here
+            Register
           </Link>
         </p>
 
-        <div className="disclaimer" style={{ marginTop: 24 }}>
-          ⚕️ Always consult your doctor before changing any medication.
-        </div>
+        <hr />
+        <p className="notice" style={{ fontSize: '0.8rem' }}>
+          This system is for medicine management only. Always consult your doctor before changing medication.
+        </p>
       </div>
     </div>
   );
