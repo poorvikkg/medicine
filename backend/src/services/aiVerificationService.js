@@ -97,7 +97,7 @@ const verifyMedicineImage = async (medicine, uploadedImageUrl) => {
 
   result.message = result.isCorrect
     ? `Medicine verified with ${result.confidence}% confidence.`
-    : `Possible mismatch detected (${result.confidence}% confidence). Please double-check or consult your doctor.`;
+    : `Possible mismatch detected (${result.confidence}% confidence). Please double-check.`;
 
   return result;
 };

@@ -6,6 +6,7 @@ import AppShell from '@/components/AppShell';
 import { dashboardAPI } from '@/lib/api';
 import toast from 'react-hot-toast';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
+import { Printer } from 'lucide-react';
 
 const COLORS = { taken: '#1f6b45', missed: '#8b1c1c' };
 
@@ -22,11 +23,13 @@ export default function AnalyticsPage() {
 
   useEffect(() => {
     if (!user) return;
-    setFetching(true);
+    Promise.resolve().then(() => setFetching(true));
     dashboardAPI.getAnalytics(user._id, days)
       .then(r => setAnalytics(r.data.analytics))
       .catch(() => toast.error('Could not load analytics.'))
-      .finally(() => setFetching(false));
+      .finally(() => {
+        Promise.resolve().then(() => setFetching(false));
+      });
   }, [user, days]);
 
   const dailyData = analytics
@@ -44,13 +47,18 @@ export default function AnalyticsPage() {
 
   return (
     <AppShell title="Reports">
-      <div style={{ display: 'flex', gap: 8, marginBottom: 24 }}>
-        {[7, 14, 30].map(d => (
-          <button key={d} className={`btn btn-sm ${days === d ? 'btn-primary' : 'btn-outline'}`}
-            onClick={() => setDays(d)}>
-            Last {d} days
-          </button>
-        ))}
+      <div style={{ display: 'flex', gap: 12, marginBottom: 24, justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: 8 }}>
+          {[7, 14, 30].map(d => (
+            <button key={d} className={`btn btn-sm ${days === d ? 'btn-primary' : 'btn-outline'}`}
+              onClick={() => setDays(d)}>
+              Last {d} days
+            </button>
+          ))}
+        </div>
+        <button className="btn btn-outline btn-sm no-print" onClick={() => window.print()}>
+          <Printer size={15} /> Print Report
+        </button>
       </div>
 
       {fetching ? (

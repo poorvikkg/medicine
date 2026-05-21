@@ -46,9 +46,9 @@ const verifyMedicine = async (req, res, next) => {
       success: true,
       verificationResult: result,
       message: result.isCorrect
-        ? '✅ Correct medicine confirmed!'
-        : '⚠️ Medicine mismatch detected. Consult your doctor if unsure.',
-      disclaimer: 'This is an AI-assisted check only. Always consult your doctor if unsure.',
+        ? 'Correct medicine confirmed!'
+        : 'Medicine mismatch detected.',
+      disclaimer: '',
     });
   } catch (err) {
     next(err);

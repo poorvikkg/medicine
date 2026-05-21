@@ -40,9 +40,6 @@ export default function LoginPage() {
             MediCare
           </div>
           <h1 style={{ fontSize: '1.6rem' }}>Sign in</h1>
-          <p style={{ color: 'var(--clr-muted)', marginTop: 4, fontSize: '0.95rem' }}>
-            Access your medicine dashboard
-          </p>
         </div>
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
@@ -98,10 +95,7 @@ export default function LoginPage() {
           </Link>
         </p>
 
-        <hr />
-        <p className="notice" style={{ fontSize: '0.8rem' }}>
-          This system is for medicine management only. Always consult your doctor before changing medication.
-        </p>
+
       </div>
     </div>
   );

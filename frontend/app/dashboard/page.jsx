@@ -53,9 +53,6 @@ export default function DashboardPage() {
 
   return (
     <AppShell title="Dashboard">
-      <div className="notice" style={{ marginBottom: 20 }}>
-        Always consult your doctor before making changes to your medication.
-      </div>
 
       <div className="stat-grid" style={{ marginBottom: 28 }}>
         <div className="stat-card">
@@ -83,7 +80,7 @@ export default function DashboardPage() {
         {upcoming.length === 0 ? (
           <div className="card" style={{ textAlign: 'center', padding: 36, color: 'var(--clr-muted)' }}>
             <Pill size={36} style={{ marginBottom: 10, opacity: 0.25 }} />
-            <p>No upcoming medicines at this time.</p>
+            <p>No medicines scheduled right now.</p>
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>

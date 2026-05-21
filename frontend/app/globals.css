@@ -382,3 +382,37 @@ hr { border: none; border-top: 1px solid var(--clr-border); margin: 20px 0; }
   border-radius: 100px;
   transition: width 0.5s ease;
 }
+
+/* ─── Print Styles ───────────────────────────────────────────────── */
+@media print {
+  .sidebar,
+  .mobile-nav,
+  header,
+  .btn,
+  #voice-btn,
+  button,
+  .no-print {
+    display: none !important;
+  }
+
+  .main-content {
+    margin-left: 0 !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+    background: transparent !important;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 11pt !important;
+  }
+
+  .card, .stat-card {
+    border: 1px solid #000000 !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+    page-break-inside: avoid;
+    margin-bottom: 20px !important;
+  }
+}

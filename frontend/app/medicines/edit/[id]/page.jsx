@@ -1,18 +1,23 @@
 'use client';
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import AppShell from '@/components/AppShell';
 import { medicineAPI } from '@/lib/api';
 import toast from 'react-hot-toast';
-import { Plus, Trash2, Upload } from 'lucide-react';
+import { Plus, Trash2, Upload, ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
 
 const defaultSlot = { time: '08:00', label: 'morning', beforeFood: false };
 
-export default function AddMedicinePage() {
-  const { user } = useAuth();
+export default function EditMedicinePage({ params }) {
+  const resolvedParams = React.use(params);
+  const id = resolvedParams.id;
+  const { user, loading: authLoading } = useAuth();
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
+  
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState('');
   const [form, setForm] = useState({
@@ -22,6 +27,46 @@ export default function AddMedicinePage() {
     shapeDescriptor: 'round', colorProfile: 'white',
   });
   const [schedule, setSchedule] = useState([{ ...defaultSlot }]);
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.replace('/login');
+    }
+  }, [user, authLoading, router]);
+
+  useEffect(() => {
+    if (!id) return;
+    setLoading(true);
+    medicineAPI.getOne(id)
+      .then(res => {
+        const med = res.data.medicine;
+        if (!med) {
+          toast.error('Medicine not found.');
+          router.push('/medicines');
+          return;
+        }
+        setForm({
+          name: med.name || '',
+          genericName: med.genericName || '',
+          dosage: med.dosage || '',
+          dosageUnit: med.dosageUnit || 'tablet',
+          quantity: med.quantity || 1,
+          instructions: med.instructions || '',
+          sideEffects: med.sideEffects || '',
+          startDate: med.startDate ? new Date(med.startDate).toISOString().split('T')[0] : '',
+          endDate: med.endDate ? new Date(med.endDate).toISOString().split('T')[0] : '',
+          patient: med.patient?._id || med.patient || '',
+          shapeDescriptor: med.shapeDescriptor || 'round',
+          colorProfile: med.colorProfile || 'white',
+        });
+        setSchedule(med.schedule?.length ? med.schedule : [{ ...defaultSlot }]);
+        if (med.medicineImage) {
+          setImagePreview(med.medicineImage);
+        }
+      })
+      .catch(() => toast.error('Could not load medicine details.'))
+      .finally(() => setLoading(false));
+  }, [id, router]);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -43,25 +88,53 @@ export default function AddMedicinePage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.patient) { toast.error('Please enter the patient ID'); return; }
-    setLoading(true);
+    setSaving(true);
     try {
       const fd = new FormData();
-      Object.entries(form).forEach(([k, v]) => fd.append(k, v));
+      Object.entries(form).forEach(([k, v]) => {
+        if (v !== null && v !== undefined) fd.append(k, v);
+      });
       fd.append('schedule', JSON.stringify(schedule));
       if (imageFile) fd.append('medicineImage', imageFile);
-      await medicineAPI.add(fd);
-      toast.success('Medicine added successfully!');
+      
+      await medicineAPI.update(id, fd);
+      toast.success('Medicine updated successfully!');
       router.push('/medicines');
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to add medicine');
+      toast.error(err.response?.data?.message || 'Failed to update medicine');
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
 
-  return (
-    <AppShell title="Add Medicine">
+  const isDoctor = user?.role === 'doctor' || user?.role === 'admin';
 
+  if (authLoading || loading) {
+    return (
+      <AppShell title="Edit Medicine">
+        <div style={{ textAlign: 'center', padding: 60 }}><div className="spinner" /></div>
+      </AppShell>
+    );
+  }
+
+  if (!isDoctor) {
+    return (
+      <AppShell title="Access Denied">
+        <div className="card" style={{ textAlign: 'center', padding: 48 }}>
+          <p>Only doctors and administrators can edit medicines.</p>
+          <Link href="/medicines" className="btn btn-primary" style={{ marginTop: 16 }}>Back to Medicines</Link>
+        </div>
+      </AppShell>
+    );
+  }
+
+  return (
+    <AppShell title="Edit Medicine">
+      <div style={{ marginBottom: 20 }}>
+        <Link href="/medicines" className="btn btn-ghost btn-sm" style={{ paddingLeft: 0 }}>
+          <ArrowLeft size={16} /> Back to Medicines
+        </Link>
+      </div>
 
       <form onSubmit={handleSubmit}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 24 }}>
@@ -209,8 +282,8 @@ export default function AddMedicinePage() {
               </div>
             </div>
 
-            <button type="submit" className="btn btn-primary btn-full btn-lg" disabled={loading} id="save-medicine-btn">
-              {loading ? 'Saving…' : 'Save Medicine'}
+            <button type="submit" className="btn btn-primary btn-full btn-lg" disabled={saving} id="save-medicine-btn">
+              {saving ? 'Saving…' : 'Save Medicine'}
             </button>
           </div>
         </div>

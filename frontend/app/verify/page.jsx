@@ -56,18 +56,8 @@ export default function VerifyPage() {
 
   return (
     <AppShell title="Verify Medicine">
-      <div className="notice" style={{ marginBottom: 20 }}>
-        AI verification is an assistive tool only. Consult your doctor if you are unsure about your medication.
-      </div>
 
       <div style={{ maxWidth: 520, margin: '0 auto' }}>
-        {!logId && (
-          <div className="card" style={{ background: 'var(--clr-warning-lt)', border: '1px solid #d4a060', marginBottom: 16 }}>
-            <p style={{ color: 'var(--clr-warning)', fontSize: '0.9rem' }}>
-              No medicine selected. Go to your Dashboard and click Verify next to a scheduled medicine.
-            </p>
-          </div>
-        )}
 
         <div style={{ display: 'flex', gap: 10, marginBottom: 20 }}>
           <button className={`btn ${mode === 'upload' ? 'btn-primary' : 'btn-outline'} btn-full`}
@@ -148,7 +138,7 @@ export default function VerifyPage() {
               </span>
             </div>
 
-            <p className="notice" style={{ textAlign: 'left', fontSize: '0.8rem' }}>{result.disclaimer}</p>
+
             <button className="btn btn-outline" style={{ marginTop: 14 }} onClick={reset}>
               <RotateCcw size={15} /> Verify Again
             </button>

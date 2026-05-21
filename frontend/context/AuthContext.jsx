@@ -9,19 +9,32 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const logout = () => {
+    localStorage.removeItem('medicare_token');
+    localStorage.removeItem('medicare_user');
+    setToken(null);
+    setUser(null);
+  };
+
   useEffect(() => {
     const storedToken = localStorage.getItem('medicare_token');
     const storedUser = localStorage.getItem('medicare_user');
     if (storedToken && storedUser) {
-      setToken(storedToken);
-      setUser(JSON.parse(storedUser));
+      Promise.resolve().then(() => {
+        setToken(storedToken);
+        setUser(JSON.parse(storedUser));
+      });
       // Verify token is still valid
       authAPI.getMe()
-        .then((res) => setUser(res.data.user))
+        .then((res) => {
+          Promise.resolve().then(() => setUser(res.data.user));
+        })
         .catch(() => logout())
-        .finally(() => setLoading(false));
+        .finally(() => {
+          Promise.resolve().then(() => setLoading(false));
+        });
     } else {
-      setLoading(false);
+      Promise.resolve().then(() => setLoading(false));
     }
   }, []);
 
@@ -43,13 +56,6 @@ export const AuthProvider = ({ children }) => {
     setToken(t);
     setUser(u);
     return u;
-  };
-
-  const logout = () => {
-    localStorage.removeItem('medicare_token');
-    localStorage.removeItem('medicare_user');
-    setToken(null);
-    setUser(null);
   };
 
   const updateUser = (updated) => {

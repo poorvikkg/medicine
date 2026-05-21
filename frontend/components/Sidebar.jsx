@@ -42,9 +42,6 @@ export default function Sidebar({ open, onClose }) {
           <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--clr-primary)', letterSpacing: '-0.02em' }}>
             MediCare
           </div>
-          <div style={{ fontSize: '0.72rem', color: 'var(--clr-subtle)', marginTop: 2, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-            Medicine Reminder System
-          </div>
         </div>
 
         <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--clr-border)' }}>

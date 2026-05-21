@@ -5,7 +5,7 @@ import { useAuth } from '@/context/AuthContext';
 import AppShell from '@/components/AppShell';
 import { medicineAPI } from '@/lib/api';
 import toast from 'react-hot-toast';
-import { Pill, Plus, Trash2, Edit, Calendar, Clock } from 'lucide-react';
+import { Pill, Plus, Trash2, Edit, Calendar, Clock, Search } from 'lucide-react';
 import Link from 'next/link';
 
 export default function MedicinesPage() {
@@ -13,6 +13,11 @@ export default function MedicinesPage() {
   const router = useRouter();
   const [medicines, setMedicines] = useState([]);
   const [fetching, setFetching] = useState(true);
+
+  // Filter and search states
+  const [search, setSearch] = useState('');
+  const [filterTime, setFilterTime] = useState('all');
+  const [filterForm, setFilterForm] = useState('all');
 
   useEffect(() => {
     if (!loading && !user) router.replace('/login');
@@ -39,11 +44,22 @@ export default function MedicinesPage() {
 
   const isDoctor = user?.role === 'doctor' || user?.role === 'admin';
 
+  // Apply filters
+  const filteredMedicines = medicines.filter(med => {
+    const matchesSearch = med.name.toLowerCase().includes(search.toLowerCase()) || 
+                          (med.genericName && med.genericName.toLowerCase().includes(search.toLowerCase()));
+    
+    const matchesTime = filterTime === 'all' || med.schedule?.some(slot => slot.label === filterTime);
+    const matchesForm = filterForm === 'all' || med.dosageUnit === filterForm;
+    
+    return matchesSearch && matchesTime && matchesForm;
+  });
+
   return (
     <AppShell title="My Medicines">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
         <p style={{ color: 'var(--clr-muted)', fontSize: '0.9rem' }}>
-          {medicines.length} active medicine{medicines.length !== 1 ? 's' : ''}
+          {filteredMedicines.length} of {medicines.length} medicine{medicines.length !== 1 ? 's' : ''} listed
         </p>
         {isDoctor && (
           <Link href="/medicines/add" className="btn btn-primary btn-sm">
@@ -52,8 +68,50 @@ export default function MedicinesPage() {
         )}
       </div>
 
-      <div className="notice" style={{ marginBottom: 18 }}>
-        Consult your doctor before changing any medication dosage or timing.
+      {/* Search & Filter bar */}
+      <div className="card" style={{ display: 'flex', gap: 12, marginBottom: 24, flexWrap: 'wrap', alignItems: 'center' }}>
+        <div style={{ flex: 1, minWidth: 240, position: 'relative' }}>
+          <Search size={16} color="var(--clr-subtle)" style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)' }} />
+          <input
+            type="text"
+            className="form-input"
+            placeholder="Search by medicine or generic name..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            style={{ paddingLeft: 40 }}
+          />
+        </div>
+        <div style={{ minWidth: 140 }}>
+          <select
+            className="form-input"
+            value={filterTime}
+            onChange={(e) => setFilterTime(e.target.value)}
+            aria-label="Filter by time of day"
+          >
+            <option value="all">All Times</option>
+            <option value="morning">Morning</option>
+            <option value="afternoon">Afternoon</option>
+            <option value="evening">Evening</option>
+            <option value="night">Night</option>
+          </select>
+        </div>
+        <div style={{ minWidth: 140 }}>
+          <select
+            className="form-input"
+            value={filterForm}
+            onChange={(e) => setFilterForm(e.target.value)}
+            aria-label="Filter by medicine form"
+          >
+            <option value="all">All Forms</option>
+            <option value="tablet">Tablet</option>
+            <option value="capsule">Capsule</option>
+            <option value="syrup">Syrup</option>
+            <option value="injection">Injection</option>
+            <option value="drops">Drops</option>
+            <option value="cream">Cream</option>
+            <option value="inhaler">Inhaler</option>
+          </select>
+        </div>
       </div>
 
       {fetching ? (
@@ -66,9 +124,15 @@ export default function MedicinesPage() {
             {isDoctor ? 'Add a medicine to get started.' : 'Your doctor will add medicines to your schedule.'}
           </p>
         </div>
+      ) : filteredMedicines.length === 0 ? (
+        <div className="card" style={{ textAlign: 'center', padding: 48, color: 'var(--clr-muted)' }}>
+          <Pill size={40} style={{ opacity: 0.2, marginBottom: 12 }} />
+          <p style={{ fontWeight: 600 }}>No medicines match filter</p>
+          <p style={{ fontSize: '0.88rem', marginTop: 4 }}>Try clearing search or filters.</p>
+        </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          {medicines.map(med => (
+          {filteredMedicines.map(med => (
             <div key={med._id} className="card" style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
               {med.medicineImage ? (
                 <img src={med.medicineImage} alt={med.name} className="medicine-img" />

@@ -49,9 +49,6 @@ export default function RegisterPage() {
             MediCare
           </div>
           <h1 style={{ fontSize: '1.6rem' }}>Create account</h1>
-          <p style={{ color: 'var(--clr-muted)', marginTop: 4, fontSize: '0.95rem' }}>
-            Set up your medicine management account
-          </p>
         </div>
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>

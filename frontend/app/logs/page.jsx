@@ -29,13 +29,15 @@ export default function LogsPage() {
 
   useEffect(() => {
     if (!user) return;
-    setFetching(true);
+    Promise.resolve().then(() => setFetching(true));
     const params = { patientId: user._id, limit: 60 };
     if (filter !== 'all') params.status = filter;
     logAPI.getAll(params)
       .then(r => setLogs(r.data.logs))
       .catch(() => toast.error('Could not load history.'))
-      .finally(() => setFetching(false));
+      .finally(() => {
+        Promise.resolve().then(() => setFetching(false));
+      });
   }, [user, filter]);
 
   const filters = ['all', 'taken', 'missed', 'pending'];

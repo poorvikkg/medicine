@@ -13,7 +13,7 @@ const getResponse = (text, meds) => {
     return 'Please use the Verify screen to confirm your medicine with the camera.';
   }
   if (q.includes('missed')) {
-    return 'Check your Dashboard to see any missed medicines. Contact your doctor if needed.';
+    return 'Check your Dashboard to see any missed medicines.';
   }
   if (q.includes('dosage') || q.includes('dose')) {
     return meds?.[0]
@@ -21,7 +21,7 @@ const getResponse = (text, meds) => {
       : 'Check your medicine list for dosage details.';
   }
   if (q.includes('side effect')) {
-    return 'If you feel unwell after taking medication, stop and contact your doctor immediately.';
+    return 'Side effects are listed under the medicine details.';
   }
   return 'You can ask: Which medicine should I take, or Is this the correct tablet.';
 };
@@ -29,7 +29,7 @@ const getResponse = (text, meds) => {
 const speak = (text) => {
   if (typeof window === 'undefined' || !window.speechSynthesis) return;
   window.speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text + ' Always consult your doctor if unsure.');
+  const u = new SpeechSynthesisUtterance(text);
   u.lang = 'en-IN';
   u.rate = 0.88;
   window.speechSynthesis.speak(u);
@@ -46,7 +46,10 @@ export default function VoiceAssistant({ upcomingMeds = [] }) {
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) { setSupported(false); return; }
+    if (!SR) {
+      Promise.resolve().then(() => setSupported(false));
+      return;
+    }
     const r = new SR();
     r.lang = 'en-IN';
     r.interimResults = false;
@@ -118,7 +121,7 @@ export default function VoiceAssistant({ upcomingMeds = [] }) {
       ) : (
         <>
           <p style={{ fontSize: '0.82rem', color: 'var(--clr-muted)', marginBottom: 14 }}>
-            Try asking: "Which medicine should I take?" or "Is this the correct tablet?"
+            Try asking: &quot;Which medicine should I take?&quot; or &quot;Is this the correct tablet?&quot;
           </p>
 
           <button
@@ -140,7 +143,7 @@ export default function VoiceAssistant({ upcomingMeds = [] }) {
           {transcript && (
             <div style={{ marginTop: 12, padding: 10, background: 'var(--clr-surface-2)', borderRadius: 6 }}>
               <p style={{ fontSize: '0.72rem', color: 'var(--clr-subtle)', marginBottom: 2 }}>You said</p>
-              <p style={{ fontSize: '0.88rem', fontStyle: 'italic' }}>"{transcript}"</p>
+              <p style={{ fontSize: '0.88rem', fontStyle: 'italic' }}>&quot;{transcript}&quot;</p>
             </div>
           )}
 
@@ -155,9 +158,7 @@ export default function VoiceAssistant({ upcomingMeds = [] }) {
             </div>
           )}
 
-          <p style={{ fontSize: '0.72rem', color: 'var(--clr-subtle)', marginTop: 12, borderTop: '1px solid var(--clr-border)', paddingTop: 10 }}>
-            Always consult your doctor if unsure about your medication.
-          </p>
+
         </>
       )}
     </div>
