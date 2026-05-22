@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import AppShell from '@/components/AppShell';
-import { medicineAPI } from '@/lib/api';
+import { medicineAPI, userAPI } from '@/lib/api';
 import toast from 'react-hot-toast';
 import { Plus, Trash2, Upload, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
@@ -18,6 +18,7 @@ export default function EditMedicinePage({ params }) {
   
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [patients, setPatients] = useState([]);
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState('');
   const [form, setForm] = useState({
@@ -27,6 +28,19 @@ export default function EditMedicinePage({ params }) {
     shapeDescriptor: 'round', colorProfile: 'white',
   });
   const [schedule, setSchedule] = useState([{ ...defaultSlot }]);
+
+  useEffect(() => {
+    userAPI.getPatients()
+      .then(res => {
+        if (res.data.success) {
+          setPatients(res.data.patients || []);
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        toast.error('Could not load patients list');
+      });
+  }, []);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -145,9 +159,21 @@ export default function EditMedicinePage({ params }) {
               <h3 style={{ marginBottom: 16 }}>Medicine Details</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                 <div className="form-group">
-                  <label className="form-label">Patient ID *</label>
-                  <input name="patient" className="form-input" placeholder="Patient's user ID"
-                    value={form.patient} onChange={handleChange} required />
+                  <label className="form-label">Patient *</label>
+                  <select
+                    name="patient"
+                    className="form-input"
+                    value={form.patient}
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="">-- Select Patient --</option>
+                    {patients.map(p => (
+                      <option key={p._id} value={p._id}>
+                        {p.name} {p.medicalId ? `(ID: ${p.medicalId})` : `(${p.email})`}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <div className="form-group">
                   <label className="form-label">Medicine Name *</label>
@@ -189,7 +215,7 @@ export default function EditMedicinePage({ params }) {
 
             {/* AI Verification hints */}
             <div className="card">
-              <h3 style={{ marginBottom: 16 }}>AI Verification Data</h3>
+              <h3 style={{ marginBottom: 16 }}>Pill Appearance</h3>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                 <div className="form-group">
                   <label className="form-label">Shape</label>

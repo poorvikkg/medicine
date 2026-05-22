@@ -76,8 +76,9 @@ export default function NotificationsPage() {
             Notifications {unread > 0 && (
               <span style={{
                 background: 'var(--clr-danger)', color: '#fff',
-                borderRadius: '50%', width: 18, height: 18, fontSize: '0.7rem',
+                borderRadius: '10px', padding: '1px 6px', fontSize: '0.65rem',
                 display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                marginLeft: 4, fontWeight: 'bold',
               }}>{unread}</span>
             )}
           </button>
@@ -87,8 +88,9 @@ export default function NotificationsPage() {
               Family Alerts {alerts.length > 0 && (
                 <span style={{
                   background: 'var(--clr-danger)', color: '#fff',
-                  borderRadius: '50%', width: 18, height: 18, fontSize: '0.7rem',
+                  borderRadius: '10px', padding: '1px 6px', fontSize: '0.65rem',
                   display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                  marginLeft: 4, fontWeight: 'bold',
                 }}>{alerts.length}</span>
               )}
             </button>

@@ -42,6 +42,11 @@ export const authAPI = {
   updateFCMToken: (fcmToken) => api.put('/auth/fcm-token', { fcmToken }),
 };
 
+// ─── Users ────────────────────────────────────────────────────────────────────
+export const userAPI = {
+  getPatients: (params) => api.get('/users/patients', { params }),
+};
+
 // ─── Medicines ───────────────────────────────────────────────────────────────
 export const medicineAPI = {
   add: (formData) => api.post('/medicines', formData, { headers: { 'Content-Type': 'multipart/form-data' } }),

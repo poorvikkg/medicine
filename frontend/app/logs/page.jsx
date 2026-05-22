@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import AppShell from '@/components/AppShell';
-import { logAPI } from '@/lib/api';
+import { logAPI, userAPI } from '@/lib/api';
 import toast from 'react-hot-toast';
-import { CheckCircle2, XCircle, Clock, ClipboardList } from 'lucide-react';
+import { CheckCircle2, XCircle, Clock, ClipboardList, ArrowLeft } from 'lucide-react';
 import { format } from 'date-fns';
 import Link from 'next/link';
 
@@ -22,28 +22,56 @@ export default function LogsPage() {
   const [logs, setLogs] = useState([]);
   const [filter, setFilter] = useState('all');
   const [fetching, setFetching] = useState(true);
+  const [patientId, setPatientId] = useState(null);
+  const [patientName, setPatientName] = useState('');
 
   useEffect(() => {
     if (!loading && !user) router.replace('/login');
   }, [user, loading, router]);
 
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      setPatientId(params.get('patient'));
+    }
+  }, []);
+
+  useEffect(() => {
     if (!user) return;
     Promise.resolve().then(() => setFetching(true));
-    const params = { patientId: user._id, limit: 60 };
+    const targetId = patientId || user._id;
+    const params = { patientId: targetId, limit: 60 };
     if (filter !== 'all') params.status = filter;
+    
     logAPI.getAll(params)
       .then(r => setLogs(r.data.logs))
       .catch(() => toast.error('Could not load history.'))
       .finally(() => {
         Promise.resolve().then(() => setFetching(false));
       });
-  }, [user, filter]);
+
+    if (patientId) {
+      userAPI.getPatients()
+        .then(res => {
+          const found = res.data.patients?.find(p => p._id === patientId);
+          if (found) setPatientName(found.name);
+        })
+        .catch(() => {});
+    }
+  }, [user, filter, patientId]);
 
   const filters = ['all', 'taken', 'missed', 'pending'];
 
   return (
-    <AppShell title="Dose History">
+    <AppShell title={patientId ? `Dose History for ${patientName || 'Patient'}` : "Dose History"}>
+      {patientId && (
+        <div style={{ marginBottom: 20 }}>
+          <Link href="/patients" className="btn btn-ghost btn-sm" style={{ paddingLeft: 0, display: 'inline-flex', gap: 6 }}>
+            <ArrowLeft size={16} /> Back to Patients Directory
+          </Link>
+        </div>
+      )}
+
       <div style={{ display: 'flex', gap: 8, marginBottom: 22, flexWrap: 'wrap' }}>
         {filters.map(f => (
           <button key={f} className={`btn btn-sm ${filter === f ? 'btn-primary' : 'btn-outline'}`}
@@ -57,8 +85,13 @@ export default function LogsPage() {
         <div style={{ textAlign: 'center', padding: 60 }}><div className="spinner" /></div>
       ) : logs.length === 0 ? (
         <div className="card" style={{ textAlign: 'center', padding: 48, color: 'var(--clr-muted)' }}>
-          <ClipboardList size={40} style={{ opacity: 0.2, marginBottom: 12 }} />
-          <p>{filter === 'all' ? 'Your dose history will appear here.' : `No ${filter} doses found.`}</p>
+          <ClipboardList size={40} style={{ opacity: 0.2, marginBottom: 12, margin: '0 auto' }} />
+          <p style={{ fontWeight: 600 }}>No history found</p>
+          <p style={{ fontSize: '0.88rem', marginTop: 4 }}>
+            {filter === 'all' 
+              ? 'Your medication history and status updates will appear here.' 
+              : `No doses marked as ${filter} yet.`}
+          </p>
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -89,7 +122,7 @@ export default function LogsPage() {
                     </p>
                   )}
                 </div>
-                {log.status === 'pending' && (
+                {log.status === 'pending' && !patientId && (
                   <Link href={`/verify?logId=${log._id}`} className="btn btn-outline btn-sm" style={{ flexShrink: 0 }}>
                     Verify
                   </Link>

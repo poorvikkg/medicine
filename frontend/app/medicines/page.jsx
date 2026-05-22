@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import AppShell from '@/components/AppShell';
-import { medicineAPI } from '@/lib/api';
+import { medicineAPI, userAPI } from '@/lib/api';
 import toast from 'react-hot-toast';
-import { Pill, Plus, Trash2, Edit, Calendar, Clock, Search } from 'lucide-react';
+import { Pill, Plus, Trash2, Edit, Calendar, Clock, Search, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
 export default function MedicinesPage() {
@@ -13,6 +13,8 @@ export default function MedicinesPage() {
   const router = useRouter();
   const [medicines, setMedicines] = useState([]);
   const [fetching, setFetching] = useState(true);
+  const [patientId, setPatientId] = useState(null);
+  const [patientName, setPatientName] = useState('');
 
   // Filter and search states
   const [search, setSearch] = useState('');
@@ -24,12 +26,30 @@ export default function MedicinesPage() {
   }, [user, loading, router]);
 
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      setPatientId(params.get('patient'));
+    }
+  }, []);
+
+  useEffect(() => {
     if (!user) return;
-    medicineAPI.getForPatient(user._id)
+    const targetId = patientId || user._id;
+    setFetching(true);
+    medicineAPI.getForPatient(targetId)
       .then(r => setMedicines(r.data.medicines))
       .catch(() => toast.error('Could not load medicines.'))
       .finally(() => setFetching(false));
-  }, [user]);
+
+    if (patientId) {
+      userAPI.getPatients()
+        .then(res => {
+          const found = res.data.patients?.find(p => p._id === patientId);
+          if (found) setPatientName(found.name);
+        })
+        .catch(() => {});
+    }
+  }, [user, patientId]);
 
   const handleDelete = async (id) => {
     if (!confirm('Remove this medicine from the schedule?')) return;
@@ -56,7 +76,15 @@ export default function MedicinesPage() {
   });
 
   return (
-    <AppShell title="My Medicines">
+    <AppShell title={patientId ? `Regimen for ${patientName || 'Patient'}` : "My Medicines"}>
+      {patientId && (
+        <div style={{ marginBottom: 20 }}>
+          <Link href="/patients" className="btn btn-ghost btn-sm" style={{ paddingLeft: 0, display: 'inline-flex', gap: 6 }}>
+            <ArrowLeft size={16} /> Back to Patients Directory
+          </Link>
+        </div>
+      )}
+
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
         <p style={{ color: 'var(--clr-muted)', fontSize: '0.9rem' }}>
           {filteredMedicines.length} of {medicines.length} medicine{medicines.length !== 1 ? 's' : ''} listed
@@ -118,7 +146,7 @@ export default function MedicinesPage() {
         <div style={{ textAlign: 'center', padding: 60 }}><div className="spinner" /></div>
       ) : medicines.length === 0 ? (
         <div className="card" style={{ textAlign: 'center', padding: 48, color: 'var(--clr-muted)' }}>
-          <Pill size={40} style={{ opacity: 0.2, marginBottom: 12 }} />
+          <Pill size={40} style={{ opacity: 0.2, marginBottom: 12, margin: '0 auto' }} />
           <p style={{ fontWeight: 600 }}>No medicines scheduled</p>
           <p style={{ fontSize: '0.88rem', marginTop: 4 }}>
             {isDoctor ? 'Add a medicine to get started.' : 'Your doctor will add medicines to your schedule.'}
@@ -126,7 +154,7 @@ export default function MedicinesPage() {
         </div>
       ) : filteredMedicines.length === 0 ? (
         <div className="card" style={{ textAlign: 'center', padding: 48, color: 'var(--clr-muted)' }}>
-          <Pill size={40} style={{ opacity: 0.2, marginBottom: 12 }} />
+          <Pill size={40} style={{ opacity: 0.2, marginBottom: 12, margin: '0 auto' }} />
           <p style={{ fontWeight: 600 }}>No medicines match filter</p>
           <p style={{ fontSize: '0.88rem', marginTop: 4 }}>Try clearing search or filters.</p>
         </div>

@@ -8,10 +8,13 @@ const { startScheduler } = require('./services/reminderScheduler');
 
 // Route imports
 const authRoutes = require('./routes/authRoutes');
+const userRoutes = require('./routes/userRoutes');
 const medicineRoutes = require('./routes/medicineRoutes');
 const logRoutes = require('./routes/logRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
+
+const path = require('path');
 
 const app = express();
 
@@ -22,6 +25,9 @@ connectDB();
 app.use(cors({ origin: process.env.FRONTEND_URL || '*', credentials: true }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Serve static uploads
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Rate limiting
 const limiter = rateLimit({
@@ -42,6 +48,7 @@ app.get('/health', (req, res) =>
 
 // API Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
 app.use('/api/medicines', medicineRoutes);
 app.use('/api/logs', logRoutes);
 app.use('/api', dashboardRoutes);

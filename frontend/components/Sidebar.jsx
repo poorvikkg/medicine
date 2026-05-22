@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import {
   LayoutDashboard, Pill, ClipboardList, Bell,
-  BarChart2, Shield, LogOut, User,
+  BarChart2, Shield, LogOut, User, Users,
 } from 'lucide-react';
 
 const patientLinks = [
@@ -14,13 +14,16 @@ const patientLinks = [
   { href: '/verify',         label: 'Verify',       icon: Shield },
   { href: '/analytics',      label: 'Reports',      icon: BarChart2 },
   { href: '/notifications',  label: 'Notifications',icon: Bell },
+  { href: '/profile',        label: 'My Profile',   icon: User },
 ];
 
 const staffLinks = [
   { href: '/dashboard',      label: 'Dashboard',    icon: LayoutDashboard },
+  { href: '/patients',       label: 'Patients',     icon: Users },
   { href: '/medicines/add',  label: 'Add Medicine', icon: Pill },
   { href: '/analytics',      label: 'Analytics',    icon: BarChart2 },
   { href: '/notifications',  label: 'Alerts',       icon: Bell },
+  { href: '/profile',        label: 'My Profile',   icon: User },
 ];
 
 export default function Sidebar({ open, onClose }) {

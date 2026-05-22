@@ -43,12 +43,12 @@ export default function RegisterPage() {
       <div className="auth-card fade-in" style={{ maxWidth: 460 }}>
         <div style={{ marginBottom: 26 }}>
           <div style={{
-            fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em',
-            textTransform: 'uppercase', color: 'var(--clr-primary)', marginBottom: 8,
+            fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.12em',
+            textTransform: 'uppercase', color: 'var(--clr-primary)', marginBottom: 6,
           }}>
-            MediCare
+            MediCare Portal
           </div>
-          <h1 style={{ fontSize: '1.6rem' }}>Create account</h1>
+          <h1 style={{ fontSize: '1.6rem', fontWeight: 700, color: 'var(--clr-primary)', margin: 0 }}>Create Account</h1>
         </div>
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>

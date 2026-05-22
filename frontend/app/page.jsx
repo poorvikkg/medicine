@@ -16,7 +16,7 @@ export default function Home() {
   return (
     <div className="loading-screen">
       <div className="spinner" />
-      <p style={{ color: 'var(--clr-text-muted)' }}>Loading MediCare…</p>
+      <p style={{ color: 'var(--clr-text-muted)' }}>Loading...</p>
     </div>
   );
 }
