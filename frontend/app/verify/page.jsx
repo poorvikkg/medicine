@@ -4,7 +4,7 @@ import { useSearchParams } from 'next/navigation';
 import AppShell from '@/components/AppShell';
 import { logAPI } from '@/lib/api';
 import toast from 'react-hot-toast';
-import { Camera, Upload, CheckCircle2, XCircle, RotateCcw, AlertCircle, Info } from 'lucide-react';
+import { Camera, Upload, CheckCircle2, XCircle, RotateCcw, AlertCircle, Info, Volume2 } from 'lucide-react';
 import Webcam from 'react-webcam';
 import Link from 'next/link';
 
@@ -17,6 +17,24 @@ function VerifyContent() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const webcamRef = useRef(null);
+
+  const speakText = (text) => {
+    if (typeof window === 'undefined' || !window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-IN';
+    u.rate = 0.85;
+    window.speechSynthesis.speak(u);
+  };
+
+  useEffect(() => {
+    if (!result) return;
+    const isCorrect = result.verificationResult?.isCorrect;
+    const msg = isCorrect
+      ? "Everything looks correct! This pill matches your prescription. You can safely take it now."
+      : "Warning! Mismatch detected. This pill does not look correct. Please double check the bottle or ask a helper.";
+    speakText(msg);
+  }, [result]);
 
   const handleFile = (e) => {
     const file = e.target.files[0];

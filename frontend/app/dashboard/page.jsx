@@ -5,7 +5,7 @@ import { useAuth } from '@/context/AuthContext';
 import AppShell from '@/components/AppShell';
 import { dashboardAPI, logAPI, userAPI } from '@/lib/api';
 import toast from 'react-hot-toast';
-import { CheckCircle2, Clock, XCircle, Pill, AlertTriangle, ArrowLeft, Shield } from 'lucide-react';
+import { CheckCircle2, Clock, XCircle, Pill, AlertTriangle, ArrowLeft, Shield, Volume2 } from 'lucide-react';
 import MedicineCard from '@/components/MedicineCard';
 import VoiceAssistant from '@/components/VoiceAssistant';
 import Link from 'next/link';
@@ -80,6 +80,27 @@ export default function DashboardPage() {
     return 'Good evening';
   };
 
+  const speakDashboardSummary = () => {
+    if (typeof window === 'undefined' || !window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    
+    let summary = `Good day! You have ${upcoming.length} medicines scheduled to take today. `;
+    if (upcoming.length > 0) {
+      summary += upcoming.map((log, idx) => {
+        const med = log.medicine || {};
+        const slotLabel = log.scheduledTime ? new Date(log.scheduledTime).toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' }) : '';
+        return `Number ${idx + 1}: ${med.name || 'Medicine'}. Dose is ${med.dosage}. Take at ${slotLabel}. ${med.instructions ? 'Instructions: ' + med.instructions : ''}.`;
+      }).join(' ');
+    } else {
+      summary += 'Great job! You have taken all your pills for today.';
+    }
+    
+    const u = new SpeechSynthesisUtterance(summary);
+    u.lang = 'en-IN';
+    u.rate = 0.85; // slightly slower for senior friendly pace
+    window.speechSynthesis.speak(u);
+  };
+
   return (
     <AppShell title={isViewingAsDoctor ? `Patient: ${patientName || 'Patient'}` : "My Dashboard"}>
       {isViewingAsDoctor && (
@@ -118,15 +139,22 @@ export default function DashboardPage() {
       {!isViewingAsDoctor && (
         <div style={{
           marginBottom: 32,
-          padding: '20px 24px',
+          padding: '24px',
           border: '3px dashed #000000',
           background: '#ffffff',
           borderRadius: '8px',
         }}>
-          <p style={{ fontSize: '1.25rem', fontWeight: 800, margin: 0, lineHeight: 1.6, color: '#000000' }}>
+          <p style={{ fontSize: '1.25rem', fontWeight: 800, margin: '0 0 16px 0', lineHeight: 1.6, color: '#000000' }}>
             We are here to help you remember your daily pills. 
             Simply tap the black button below when you take a pill, or tap the microphone icon at the bottom right of your screen to speak to us.
           </p>
+          <button 
+            onClick={speakDashboardSummary}
+            className="btn btn-primary"
+            style={{ display: 'inline-flex', gap: 10, width: '100%', fontSize: '1.3rem', padding: '16px' }}
+          >
+            <Volume2 size={24} color="#ffffff" /> TAP HERE TO HEAR YOUR SCHEDULE OUT LOUD
+          </button>
         </div>
       )}
 
