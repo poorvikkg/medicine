@@ -5,7 +5,7 @@ import { useAuth } from '@/context/AuthContext';
 import AppShell from '@/components/AppShell';
 import { medicineAPI, userAPI } from '@/lib/api';
 import toast from 'react-hot-toast';
-import { Pill, Plus, Trash2, Edit, Calendar, Clock, Search, ArrowLeft } from 'lucide-react';
+import { Pill, Plus, Trash2, Edit, Calendar, Clock, Search, ArrowLeft, Volume2 } from 'lucide-react';
 import Link from 'next/link';
 
 export default function MedicinesPage() {
@@ -75,6 +75,26 @@ export default function MedicinesPage() {
     return matchesSearch && matchesTime && matchesForm;
   });
 
+  const speakPrescriptions = () => {
+    if (typeof window === 'undefined' || !window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    
+    let summary = `You have ${medicines.length} scheduled medicines in your list. `;
+    if (medicines.length > 0) {
+      summary += medicines.map((med, idx) => {
+        const scheduleStr = med.schedule?.map(slot => `${slot.time} in the ${slot.label}`).join(', ') || '';
+        return `Number ${idx + 1}: ${med.name}. Dose is ${med.dosage}. Take at: ${scheduleStr}. ${med.instructions ? 'Instructions: ' + med.instructions : ''}.`;
+      }).join(' ');
+    } else {
+      summary += 'You currently have no medicines listed in your schedule.';
+    }
+    
+    const u = new SpeechSynthesisUtterance(summary);
+    u.lang = 'en-IN';
+    u.rate = 0.85; // senior friendly speech rate
+    window.speechSynthesis.speak(u);
+  };
+
   return (
     <AppShell title={patientId ? `Regimen for ${patientName || 'Patient'}` : "My Medicines"}>
       {patientId && (
@@ -84,6 +104,20 @@ export default function MedicinesPage() {
           </Link>
         </div>
       )}
+
+      {/* Elder Accessible Read Aloud Prescription Button */}
+      <div style={{ marginBottom: 24, padding: '20px', border: '3px dashed #000000', borderRadius: '8px' }}>
+        <p style={{ fontSize: '1.2rem', fontWeight: 'bold', margin: '0 0 14px 0', color: '#000000' }}>
+          Would you like to hear your entire medicine list read out loud to you?
+        </p>
+        <button 
+          onClick={speakPrescriptions}
+          className="btn btn-primary"
+          style={{ display: 'inline-flex', gap: 10, width: '100%', fontSize: '1.25rem', padding: '14px' }}
+        >
+          <Volume2 size={24} color="#ffffff" /> TAP HERE TO HEAR MEDICINES OUT LOUD
+        </button>
+      </div>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
         <p style={{ color: 'var(--clr-muted)', fontSize: '0.9rem' }}>
