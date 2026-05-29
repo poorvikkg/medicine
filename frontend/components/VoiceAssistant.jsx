@@ -1,6 +1,6 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
-import { Mic, MicOff, Volume2, X } from 'lucide-react';
+import { Mic, MicOff, Volume2, X, Sparkles } from 'lucide-react';
 
 const getResponse = (text, meds) => {
   const q = text.toLowerCase();
@@ -78,87 +78,95 @@ export default function VoiceAssistant({ upcomingMeds = [] }) {
       <button
         onClick={() => setOpen(true)}
         style={{
-          position: 'fixed', bottom: 80, right: 20,
-          width: 52, height: 52, borderRadius: '50%',
-          background: 'var(--clr-primary)', color: '#fff',
-          border: 'none', cursor: 'pointer',
-          boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
+          position: 'fixed', bottom: 90, right: 30,
+          width: 70, height: 70, borderRadius: '50%',
+          background: '#ffffff',
+          color: '#000000',
+          border: '4px solid #000000', cursor: 'pointer',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          zIndex: 300, transition: 'transform 0.2s',
+          zIndex: 300,
         }}
-        aria-label="Voice assistant"
-        title="Voice Assistant"
-        onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.08)'}
-        onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+        aria-label="Voice help"
+        title="Voice Help"
       >
-        <Mic size={22} />
+        <Mic size={32} color="#000000" />
       </button>
     );
   }
 
   return (
-    <div style={{
-      position: 'fixed', bottom: 80, right: 20, width: 300,
-      background: 'var(--clr-surface)', border: '1px solid var(--clr-border)',
-      borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow)',
-      zIndex: 300, padding: 20,
-    }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-          <Volume2 size={17} color="var(--clr-primary)" />
-          <span style={{ fontWeight: 700, fontSize: '0.9rem' }}>Voice Assistant</span>
+    <div 
+      className="card" 
+      style={{
+        position: 'fixed', bottom: 90, right: 30, width: 360,
+        background: '#ffffff', 
+        border: '3px solid #000000',
+        borderRadius: '8px', 
+        zIndex: 300, padding: 24,
+      }}
+    >
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <Mic size={24} color="#000000" />
+          <span style={{ fontWeight: 800, fontSize: '1.3rem', color: '#000000' }}>
+            Voice Help
+          </span>
         </div>
-        <button className="btn btn-ghost btn-sm" style={{ padding: 4 }}
-          onClick={() => { setOpen(false); window.speechSynthesis?.cancel(); }}>
-          <X size={16} />
+        <button 
+          className="btn btn-outline btn-sm" 
+          style={{ padding: '6px 12px', fontSize: '1.0rem' }}
+          onClick={() => { setOpen(false); window.speechSynthesis?.cancel(); }}
+          aria-label="Close voice help"
+        >
+          CLOSE
         </button>
       </div>
 
       {!supported ? (
-        <p style={{ fontSize: '0.85rem', color: 'var(--clr-danger)' }}>
+        <p style={{ fontSize: '1.15rem', color: '#000000', fontWeight: 'bold' }}>
           Voice input is not supported in this browser. Please use Chrome.
         </p>
       ) : (
         <>
-          <p style={{ fontSize: '0.82rem', color: 'var(--clr-muted)', marginBottom: 14 }}>
-            Try asking: &quot;Which medicine should I take?&quot; or &quot;Is this the correct tablet?&quot;
+          <p style={{ fontSize: '1.15rem', color: '#000000', marginBottom: 16, lineHeight: 1.5 }}>
+            Ask about your schedule. Ask: "Which medicine should I take?"
           </p>
 
           <button
             onClick={toggle}
+            className={`btn btn-full ${listening ? 'btn-primary' : 'btn-outline'}`}
             style={{
-              width: '100%', padding: '13px',
-              borderRadius: 8,
-              background: listening ? 'var(--clr-danger)' : 'var(--clr-primary)',
-              color: '#fff', border: 'none', cursor: 'pointer',
-              fontFamily: 'inherit', fontSize: '0.9rem', fontWeight: 700,
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+              padding: '14px',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+              fontSize: '1.2rem',
+              border: '3px solid #000000',
             }}
             id="voice-btn"
           >
-            {listening ? <MicOff size={18} /> : <Mic size={18} />}
-            {listening ? 'Listening...' : 'Tap to Speak'}
+            {listening ? <MicOff size={20} color="#ffffff" /> : <Mic size={20} color="#000000" />}
+            {listening ? 'LISTENING NOW...' : 'TAP HERE TO SPEAK'}
           </button>
 
           {transcript && (
-            <div style={{ marginTop: 12, padding: 10, background: 'var(--clr-surface-2)', borderRadius: 6 }}>
-              <p style={{ fontSize: '0.72rem', color: 'var(--clr-subtle)', marginBottom: 2 }}>You said</p>
-              <p style={{ fontSize: '0.88rem', fontStyle: 'italic' }}>&quot;{transcript}&quot;</p>
+            <div style={{ marginTop: 16, padding: 14, background: '#ffffff', border: '3px solid #000000', borderRadius: '6px' }}>
+              <p style={{ fontSize: '1.0rem', color: '#000000', fontWeight: 800, textTransform: 'uppercase', marginBottom: 4 }}>You said:</p>
+              <p style={{ fontSize: '1.2rem', color: '#000000', fontWeight: 'bold' }}>"{transcript}"</p>
             </div>
           )}
 
           {response && (
-            <div style={{ marginTop: 10, padding: 12, background: 'var(--clr-primary-lt)', borderRadius: 6 }}>
-              <p style={{ fontSize: '0.72rem', color: 'var(--clr-primary)', fontWeight: 700, marginBottom: 4 }}>Response</p>
-              <p style={{ fontSize: '0.88rem', lineHeight: 1.5 }}>{response}</p>
-              <button className="btn btn-ghost btn-sm" style={{ marginTop: 8, padding: '4px 8px', fontSize: '0.78rem' }}
-                onClick={() => speak(response)}>
-                <Volume2 size={12} /> Repeat
+            <div style={{ marginTop: 14, padding: 16, background: '#ffffff', border: '3px solid #000000', borderRadius: '6px' }}>
+              <p style={{ fontSize: '1.0rem', color: '#000000', fontWeight: 800, textTransform: 'uppercase', marginBottom: 4 }}>Answer:</p>
+              <p style={{ fontSize: '1.2rem', lineHeight: 1.5, color: '#000000', fontWeight: 'bold' }}>{response}</p>
+              <button 
+                className="btn btn-primary" 
+                style={{ marginTop: 12, padding: '10px 20px', fontSize: '1.05rem', width: '100%' }}
+                onClick={() => speak(response)}
+              >
+                <Volume2 size={16} color="#ffffff" style={{ marginRight: 6 }} /> READ ANSWER ALOUD
               </button>
             </div>
           )}
-
-
         </>
       )}
     </div>

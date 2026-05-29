@@ -8,7 +8,7 @@ import toast from 'react-hot-toast';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 import { Printer } from 'lucide-react';
 
-const COLORS = { taken: '#1f6b45', missed: '#8b1c1c' };
+const COLORS = { taken: '#10b981', missed: '#e11d48' };
 
 export default function AnalyticsPage() {
   const { user, loading } = useAuth();

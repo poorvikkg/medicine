@@ -5,7 +5,7 @@ import { useAuth } from '@/context/AuthContext';
 import AppShell from '@/components/AppShell';
 import { dashboardAPI, logAPI, userAPI } from '@/lib/api';
 import toast from 'react-hot-toast';
-import { CheckCircle2, Clock, XCircle, Pill, AlertTriangle, ArrowLeft } from 'lucide-react';
+import { CheckCircle2, Clock, XCircle, Pill, AlertTriangle, ArrowLeft, Shield } from 'lucide-react';
 import MedicineCard from '@/components/MedicineCard';
 import VoiceAssistant from '@/components/VoiceAssistant';
 import Link from 'next/link';
@@ -73,67 +73,94 @@ export default function DashboardPage() {
   const { upcoming = [], completed = [], missed = [], recentAlerts = [] } = data || {};
   const isViewingAsDoctor = !!patientId;
 
+  const getGreeting = () => {
+    const hr = new Date().getHours();
+    if (hr < 12) return 'Good morning';
+    if (hr < 17) return 'Good afternoon';
+    return 'Good evening';
+  };
+
   return (
-    <AppShell title={isViewingAsDoctor ? `Dashboard for ${patientName || 'Patient'}` : "Dashboard"}>
+    <AppShell title={isViewingAsDoctor ? `Patient: ${patientName || 'Patient'}` : "My Dashboard"}>
       {isViewingAsDoctor && (
-        <div style={{ marginBottom: 20 }}>
-          <Link href="/patients" className="btn btn-ghost btn-sm" style={{ paddingLeft: 0, display: 'inline-flex', gap: 6 }}>
-            <ArrowLeft size={16} /> Back to Patients Directory
+        <div style={{ marginBottom: 24 }}>
+          <Link href="/patients" className="btn btn-outline btn-sm" style={{ display: 'inline-flex', gap: 8 }}>
+            <ArrowLeft size={18} /> BACK TO PATIENTS DIRECTORY
           </Link>
         </div>
       )}
 
-      {/* Greeting Banner */}
+      {/* Dynamic Handcrafted Friendly Greeting */}
       <div className="card" style={{
         marginBottom: 24,
-        background: 'linear-gradient(135deg, var(--clr-primary) 0%, var(--clr-primary-h) 100%)',
-        color: '#ffffff',
-        border: 'none',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        flexWrap: 'wrap',
-        gap: 16
+        background: '#ffffff',
+        border: '3px solid #000000',
+        padding: '30px',
       }}>
-        <div>
-          <h2 style={{ color: '#ffffff', fontSize: '1.4rem', fontWeight: 700, margin: 0 }}>
-            {isViewingAsDoctor 
-              ? `Dashboard for ${patientName}` 
-              : `Welcome, ${user?.name}`}
-          </h2>
+        <p style={{ fontSize: '1.25rem', fontWeight: 800, textTransform: 'uppercase', margin: '0 0 8px', color: '#000000' }}>
+          {isViewingAsDoctor ? 'STAFF REVIEW' : new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })}
+        </p>
+        <h2 style={{ fontSize: '2.4rem', fontWeight: 900, margin: 0, color: '#000000', lineHeight: 1.2 }}>
+          {isViewingAsDoctor 
+            ? `Dashboard for ${patientName}` 
+            : `${getGreeting()}, ${user?.name?.split(' ')[0]}!`}
+        </h2>
+        <p style={{ color: '#000000', fontSize: '1.35rem', marginTop: 8, fontWeight: 700 }}>
+          {isViewingAsDoctor 
+            ? `Reviewing patient's scheduled doses.` 
+            : upcoming.length > 0 
+              ? `You have ${upcoming.length} medicine${upcoming.length > 1 ? 's' : ''} to take today.`
+              : `You have taken all your medicines scheduled for today.`}
+        </p>
+      </div>
+
+      {/* Handcrafted Reassuring Senior Care Helper Note */}
+      {!isViewingAsDoctor && (
+        <div style={{
+          marginBottom: 32,
+          padding: '20px 24px',
+          border: '3px dashed #000000',
+          background: '#ffffff',
+          borderRadius: '8px',
+        }}>
+          <p style={{ fontSize: '1.25rem', fontWeight: 800, margin: 0, lineHeight: 1.6, color: '#000000' }}>
+            We are here to help you remember your daily pills. 
+            Simply tap the black button below when you take a pill, or tap the microphone icon at the bottom right of your screen to speak to us.
+          </p>
+        </div>
+      )}
+
+      <div className="stat-grid" style={{ marginBottom: 36 }}>
+        <div className="stat-card" style={{ border: '3px solid #000000', padding: '24px' }}>
+          <div className="stat-value" style={{ fontSize: '3rem' }}>{upcoming.length}</div>
+          <div className="stat-label" style={{ fontSize: '1.1rem', fontWeight: 'bold' }}>To Take Today</div>
+        </div>
+        <div className="stat-card" style={{ border: '3px solid #000000', padding: '24px' }}>
+          <div className="stat-value" style={{ fontSize: '3rem' }}>{completed.length}</div>
+          <div className="stat-label" style={{ fontSize: '1.1rem', fontWeight: 'bold' }}>Already Taken</div>
+        </div>
+        <div className="stat-card" style={{ border: '3px solid #000000', padding: '24px' }}>
+          <div className="stat-value" style={{ fontSize: '3rem' }}>{missed.length}</div>
+          <div className="stat-label" style={{ fontSize: '1.1rem', fontWeight: 'bold' }}>Missed Today</div>
+        </div>
+        <div className="stat-card" style={{ border: '3px solid #000000', padding: '24px' }}>
+          <div className="stat-value" style={{ fontSize: '3rem' }}>{recentAlerts.length}</div>
+          <div className="stat-label" style={{ fontSize: '1.1rem', fontWeight: 'bold' }}>Active Alerts</div>
         </div>
       </div>
 
-      <div className="stat-grid" style={{ marginBottom: 28 }}>
-        <div className="stat-card">
-          <div className="stat-value" style={{ color: 'var(--clr-primary)' }}>{upcoming.length}</div>
-          <div className="stat-label">Upcoming</div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-value" style={{ color: 'var(--clr-success)' }}>{completed.length}</div>
-          <div className="stat-label">Taken Today</div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-value" style={{ color: 'var(--clr-danger)' }}>{missed.length}</div>
-          <div className="stat-label">Missed Today</div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-value" style={{ color: 'var(--clr-warning)' }}>{recentAlerts.length}</div>
-          <div className="stat-label">Active Alerts</div>
-        </div>
-      </div>
-
-      <div style={{ marginBottom: 28 }}>
-        <div className="section-title">
-          <Clock size={15} /> Upcoming Schedules
+      <div style={{ marginBottom: 36 }}>
+        <div className="section-title" style={{ fontSize: '1.4rem', borderBottom: '3px solid #000000', paddingBottom: 10, display: 'flex', alignItems: 'center', gap: 10 }}>
+          <Clock size={22} color="#000000" /> MEDICINES YOU NEED TO TAKE TODAY
         </div>
         {upcoming.length === 0 ? (
-          <div className="card" style={{ textAlign: 'center', padding: 36, color: 'var(--clr-muted)' }}>
-            <Pill size={36} style={{ marginBottom: 10, opacity: 0.25 }} />
-            <p style={{ fontSize: '0.95rem', fontWeight: 600 }}>All caught up! No medicines scheduled for the moment.</p>
+          <div className="card" style={{ textAlign: 'center', padding: 48, border: '3px dashed #000000' }}>
+            <Pill size={48} style={{ marginBottom: 16, margin: '0 auto', color: '#000000' }} />
+            <p style={{ fontSize: '1.5rem', fontWeight: 800, color: '#000000' }}>No medicines left to take</p>
+            <p style={{ fontSize: '1.2rem', marginTop: 8 }}>You are all done for now!</p>
           </div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             {upcoming.map(log => (
               <MedicineCard 
                 key={log._id} 
@@ -147,30 +174,52 @@ export default function DashboardPage() {
       </div>
 
       {missed.length > 0 && (
-        <div style={{ marginBottom: 28 }}>
-          <div className="section-title"><XCircle size={15} /> Missed Today</div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <div style={{ marginBottom: 36 }}>
+          <div className="section-title" style={{ fontSize: '1.4rem', color: '#000000', borderBottom: '3px solid #000000', paddingBottom: 10, display: 'flex', alignItems: 'center', gap: 10 }}>
+            <XCircle size={22} color="#000000" /> MISSED MEDICINES TODAY
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             {missed.map(log => <MedicineCard key={log._id} log={log} status="missed" />)}
           </div>
         </div>
       )}
 
       {completed.length > 0 && (
-        <div style={{ marginBottom: 28 }}>
-          <div className="section-title"><CheckCircle2 size={15} /> Taken Today</div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <div style={{ marginBottom: 36 }}>
+          <div className="section-title" style={{ fontSize: '1.4rem', color: '#000000', borderBottom: '3px solid #000000', paddingBottom: 10, display: 'flex', alignItems: 'center', gap: 10 }}>
+            <CheckCircle2 size={22} color="#000000" /> MEDICINES TAKEN TODAY
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             {completed.map(log => <MedicineCard key={log._id} log={log} status="taken" />)}
           </div>
         </div>
       )}
 
-      {/* Verify Promo card - only show if patient has scheduled medicines & is NOT viewing as doctor */}
+      {/* Verify Promo card */}
       {!isViewingAsDoctor && upcoming.length > 0 && (
-        <div className="card" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
-          <div>
-            <h3 style={{ margin: 0 }}>Verify your medicine</h3>
+        <div className="card" style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'space-between', 
+          flexWrap: 'wrap', 
+          gap: 20,
+          background: '#ffffff',
+          border: '3px solid #000000',
+          padding: '24px 30px',
+          marginBottom: 36,
+        }}>
+          <div style={{ flex: '1 1 300px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+              <Shield size={22} color="#000000" />
+              <span style={{ fontWeight: 800, fontSize: '1.35rem', color: '#000000' }}>Check Your Pill</span>
+            </div>
+            <p style={{ color: '#000000', fontSize: '1.15rem', margin: 0, lineHeight: 1.5 }}>
+              Use your phone's camera to verify you are taking the correct medicine pill.
+            </p>
           </div>
-          <Link href="/verify" className="btn btn-primary">Verify Medicine</Link>
+          <Link href="/verify" className="btn btn-primary" style={{ padding: '14px 28px', fontSize: '1.2rem' }}>
+            START CAMERA CHECK
+          </Link>
         </div>
       )}
 

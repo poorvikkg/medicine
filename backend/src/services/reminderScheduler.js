@@ -5,6 +5,7 @@ const Notification = require('../models/Notification');
 const FamilyAlert = require('../models/FamilyAlert');
 const User = require('../models/User');
 const { sendPushNotification } = require('../config/firebase');
+const { sendEmail } = require('../config/email');
 
 /**
  * Generate MedicineLog entries for today's schedules.
@@ -72,7 +73,7 @@ const sendUpcomingReminders = async () => {
       const { patient, medicine } = log;
       if (!patient?.fcmToken) continue;
 
-      const title = `💊 Time for ${medicine.name}`;
+      const title = `Time for ${medicine.name}`;
       const body = `Dosage: ${medicine.dosage}. ${medicine.instructions || ''}`.trim();
 
       await sendPushNotification(patient.fcmToken, title, body, {
@@ -132,7 +133,7 @@ const markMissedAndAlert = async () => {
       if (log.patient?.fcmToken) {
         await sendPushNotification(
           log.patient.fcmToken,
-          '⚠️ Missed Medicine',
+          'Missed Medicine',
           `You missed ${log.medicine.name}. Please take it if not done.`,
           { type: 'missed', logId: log._id.toString() }
         );
@@ -141,6 +142,36 @@ const markMissedAndAlert = async () => {
       // Alert caregivers if 2+ misses
       if (recentMisses >= 2 && log.patient?.caregivers?.length) {
         for (const caregiver of log.patient.caregivers) {
+          const notifiedVia = [];
+          if (caregiver.fcmToken) notifiedVia.push('fcm');
+
+          // Send Email alert if email is available
+          if (caregiver.email) {
+            try {
+              const subject = `Medicare Alert: ${log.patient.name} missed their medicine`;
+              const text = `Dear ${caregiver.name},\n\nThis is an alert from MediCare. Patient ${log.patient.name} has missed their medicine "${log.medicine.name}" ${recentMisses} time(s) today. Please check on them as soon as possible.\n\nBest regards,\nMediCare Team`;
+              const html = `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 3px solid #000000; border-radius: 6px;">
+                  <h2 style="color: #000000; border-bottom: 3px solid #000000; padding-bottom: 10px;">Medicare Alert</h2>
+                  <p>Dear <strong>${caregiver.name}</strong>,</p>
+                  <p>This is an automated alert regarding <strong>${log.patient.name}</strong>.</p>
+                  <div style="background-color: #f9f9f9; padding: 15px; border-left: 5px solid #d9534f; margin: 15px 0;">
+                    <p style="margin: 0; font-size: 16px;"><strong>Status:</strong> Missed Medication</p>
+                    <p style="margin: 5px 0 0 0; font-size: 16px;"><strong>Medicine:</strong> ${log.medicine.name}</p>
+                    <p style="margin: 5px 0 0 0; font-size: 16px;"><strong>Missed Count Today:</strong> ${recentMisses}</p>
+                  </div>
+                  <p>Please contact or check on <strong>${log.patient.name}</strong> to ensure they take their required dosage.</p>
+                  <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
+                  <p style="font-size: 12px; color: #777;">This is an automated email from MediCare. Please do not reply directly to this message.</p>
+                </div>
+              `;
+              await sendEmail({ to: caregiver.email, subject, text, html });
+              notifiedVia.push('email');
+            } catch (err) {
+              console.error(`[Scheduler] Failed to send email alert to ${caregiver.email}:`, err.message);
+            }
+          }
+
           await FamilyAlert.create({
             patient: log.patient._id,
             caregiver: caregiver._id,
@@ -148,13 +179,13 @@ const markMissedAndAlert = async () => {
             missCount: recentMisses,
             relatedMedicine: log.medicine._id,
             message: `${log.patient.name} has missed ${log.medicine.name} ${recentMisses} time(s) today.`,
-            notifiedVia: caregiver.fcmToken ? ['fcm'] : [],
+            notifiedVia,
           });
 
           if (caregiver.fcmToken) {
             await sendPushNotification(
               caregiver.fcmToken,
-              '🚨 Family Alert',
+              'Family Alert',
               `${log.patient.name} missed ${log.medicine.name} (${recentMisses}x today)`,
               { type: 'family_alert', patientId: log.patient._id.toString() }
             );

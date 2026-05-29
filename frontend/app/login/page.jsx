@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import toast from 'react-hot-toast';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Lock, Mail, Pill } from 'lucide-react';
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -29,52 +29,83 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="auth-page">
-      <div className="auth-card fade-in">
-        <div style={{ marginBottom: 28 }}>
+    <div className="auth-page" style={{ background: '#ffffff' }}>
+      <div className="auth-card" style={{ border: '3px solid #000000', padding: '40px', background: '#ffffff' }}>
+        
+        {/* Portal Branding */}
+        <div style={{ textAlign: 'center', marginBottom: 32 }}>
           <div style={{
-            fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.12em',
-            textTransform: 'uppercase', color: 'var(--clr-primary)',
-            marginBottom: 6,
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 50,
+            height: 50,
+            borderRadius: '6px',
+            background: '#ffffff',
+            border: '3px solid #000000',
+            marginBottom: 14
           }}>
-            MediCare Portal
+            <Pill size={26} color="#000000" />
           </div>
-          <h1 style={{ fontSize: '1.6rem', fontWeight: 700, color: 'var(--clr-primary)', margin: 0 }}>Welcome Back</h1>
+          <div style={{
+            fontSize: '1.0rem', fontWeight: 900, letterSpacing: '0.12em',
+            textTransform: 'uppercase', color: '#000000',
+            marginBottom: 8,
+          }}>
+            MEDICARE
+          </div>
+          <h1 style={{ 
+            fontSize: '2.4rem', 
+            fontWeight: 900, 
+            color: '#000000',
+            margin: '0 0 10px 0' 
+          }}>
+            Sign In
+          </h1>
+          <p style={{ fontSize: '1.25rem', color: '#000000', fontWeight: 'bold' }}>
+            Enter your details to access your schedules.
+          </p>
         </div>
 
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+          
           <div className="form-group">
-            <label className="form-label" htmlFor="email">Email</label>
-            <input
-              id="email" name="email" type="email"
-              className="form-input" placeholder="name@example.com"
-              value={form.email} onChange={handleChange}
-              required autoComplete="email"
-            />
+            <label className="form-label" htmlFor="email" style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>Email Address</label>
+            <div style={{ position: 'relative' }}>
+              <Mail size={20} color="#000000" style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)' }} />
+              <input
+                id="email" name="email" type="email"
+                className="form-input" placeholder="name@example.com"
+                value={form.email} onChange={handleChange}
+                required autoComplete="email"
+                style={{ paddingLeft: 44, fontSize: '1.25rem' }}
+              />
+            </div>
           </div>
 
           <div className="form-group">
-            <label className="form-label" htmlFor="password">Password</label>
+            <label className="form-label" htmlFor="password" style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>Password</label>
             <div style={{ position: 'relative' }}>
+              <Lock size={20} color="#000000" style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)' }} />
               <input
                 id="password" name="password"
                 type={showPass ? 'text' : 'password'}
-                className="form-input" placeholder="Enter your password"
+                className="form-input" placeholder="Enter password"
                 value={form.password} onChange={handleChange}
-                required style={{ paddingRight: 46 }}
+                required style={{ paddingLeft: 44, paddingRight: 46, fontSize: '1.25rem' }}
               />
               <button
                 type="button"
                 onClick={() => setShowPass(!showPass)}
                 style={{
-                  position: 'absolute', right: 12, top: '50%',
+                  position: 'absolute', right: 14, top: '50%',
                   transform: 'translateY(-50%)',
                   background: 'none', border: 'none', cursor: 'pointer',
-                  color: 'var(--clr-subtle)', display: 'flex', padding: 0,
+                  color: '#000000', display: 'flex', padding: 0,
                 }}
                 aria-label={showPass ? 'Hide password' : 'Show password'}
               >
-                {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
+                {showPass ? <EyeOff size={22} color="#000000" /> : <Eye size={22} color="#000000" />}
               </button>
             </div>
           </div>
@@ -82,19 +113,20 @@ export default function LoginPage() {
           <button
             type="submit" className="btn btn-primary btn-full btn-lg"
             disabled={loading} id="login-btn"
-            style={{ marginTop: 4 }}
+            style={{ marginTop: 8 }}
           >
-            {loading ? 'Signing in...' : 'Sign In'}
+            {loading ? 'VERIFYING...' : 'SIGN IN NOW'}
           </button>
         </form>
 
-        <p style={{ textAlign: 'center', marginTop: 22, color: 'var(--clr-muted)', fontSize: '0.9rem' }}>
-          No account?{' '}
-          <Link href="/register" style={{ color: 'var(--clr-primary)', fontWeight: 700 }}>
-            Register
-          </Link>
-        </p>
-
+        <div style={{ marginTop: 30, textAlign: 'center', borderTop: '3px solid #000000', paddingTop: 20 }}>
+          <p style={{ color: '#000000', fontSize: '1.2rem', margin: 0, fontWeight: 'bold' }}>
+            Need an account?{' '}
+            <Link href="/register" style={{ color: '#000000', fontWeight: 900, textDecoration: 'underline' }}>
+              Register Here
+            </Link>
+          </p>
+        </div>
 
       </div>
     </div>

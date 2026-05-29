@@ -28,17 +28,26 @@ export default function MobileNav() {
   if (!user) return null;
 
   return (
-    <nav className="mobile-nav">
-      {links.map(({ href, label, icon: Icon }) => (
-        <Link
-          key={href}
-          href={href}
-          className={`mobile-nav-item ${pathname === href || (href !== '/dashboard' && pathname.startsWith(href)) ? 'active' : ''}`}
-        >
-          <Icon size={20} />
-          <span>{label}</span>
-        </Link>
-      ))}
+    <nav className="mobile-nav" style={{ background: '#ffffff', borderTop: '3px solid #000000', padding: '12px 0' }}>
+      {links.map(({ href, label, icon: Icon }) => {
+        const isActive = pathname === href || (href !== '/dashboard' && pathname.startsWith(href));
+        return (
+          <Link
+            key={href}
+            href={href}
+            className={`mobile-nav-item ${isActive ? 'active' : ''}`}
+            style={{
+              color: '#000000',
+              fontWeight: isActive ? '900' : 'bold',
+              textDecoration: isActive ? 'underline' : 'none',
+              fontSize: '0.9rem',
+            }}
+          >
+            <Icon size={24} color="#000000" strokeWidth={isActive ? 3.0 : 2.0} />
+            <span>{label.toUpperCase()}</span>
+          </Link>
+        );
+      })}
     </nav>
   );
 }

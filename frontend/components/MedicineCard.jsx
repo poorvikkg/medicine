@@ -18,49 +18,48 @@ export default function MedicineCard({ log, showActions = false, onTake, status:
   const time = log?.scheduledTime ? format(new Date(log.scheduledTime), 'hh:mm a') : '';
 
   return (
-    <div className="medicine-card fade-in">
+    <div className={`medicine-card card-${key}`} style={{ border: '3px solid #000000', padding: '24px' }}>
       {med.medicineImage ? (
-        <img src={med.medicineImage} alt={med.name} className="medicine-img" />
+        <img src={med.medicineImage} alt={med.name} className="medicine-img" style={{ width: '100px', height: '100px', border: '3px solid #000000' }} />
       ) : (
-        <div className="medicine-img-placeholder">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <div className="medicine-img-placeholder" style={{ width: '100px', height: '100px', border: '3px solid #000000' }}>
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2.5">
             <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
           </svg>
         </div>
       )}
 
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8, flexWrap: 'wrap' }}>
-          <h3 style={{ fontSize: '1rem', margin: 0 }}>{med.name || 'Unknown'}</h3>
-          <span className={`badge ${cfg.badge}`}>
-            <Icon size={11} /> {cfg.label}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap', marginBottom: 8 }}>
+          <h3 style={{ fontSize: '1.6rem', fontWeight: 800, margin: 0 }}>{med.name || 'Unknown Medicine'}</h3>
+          <span className={`badge ${cfg.badge}`} style={{ fontSize: '1.0rem', padding: '6px 12px', border: '2px solid #000000', fontWeight: 'bold' }}>
+            {cfg.label.toUpperCase()}
           </span>
         </div>
 
-        <p style={{ color: 'var(--clr-muted)', fontSize: '0.9rem', margin: '4px 0 2px' }}>
-          {med.dosage}
-          {med.dosageUnit ? ` · ${med.dosageUnit}` : ''}
+        <p style={{ fontSize: '1.3rem', fontWeight: 700, margin: '6px 0', color: '#000000' }}>
+          Dose: {med.dosage} {med.dosageUnit ? `(${med.dosageUnit})` : ''}
         </p>
 
         {med.instructions && (
-          <p style={{ color: 'var(--clr-muted)', fontSize: '0.84rem', display: 'flex', alignItems: 'center', gap: 4 }}>
-            <Info size={12} style={{ flexShrink: 0 }} /> {med.instructions}
+          <p style={{ fontSize: '1.15rem', marginTop: 6, display: 'flex', alignItems: 'center', gap: 8, color: '#000000', fontWeight: 'bold' }}>
+            <Info size={18} color="#000000" style={{ flexShrink: 0 }} /> Instructions: {med.instructions}
           </p>
         )}
 
         {time && (
-          <p style={{ color: 'var(--clr-subtle)', fontSize: '0.8rem', marginTop: 4, display: 'flex', alignItems: 'center', gap: 4 }}>
-            <Clock size={12} /> Scheduled {time}
+          <p style={{ fontSize: '1.15rem', marginTop: 6, display: 'flex', alignItems: 'center', gap: 8, color: '#000000' }}>
+            <Clock size={18} color="#000000" /> Take at: {time}
           </p>
         )}
 
         {showActions && key === 'pending' && (
-          <div style={{ display: 'flex', gap: 8, marginTop: 12, flexWrap: 'wrap' }}>
-            <button className="btn btn-success btn-sm" onClick={onTake} id={`take-${log?._id}`}>
-              <CheckCircle2 size={14} /> Mark Taken
+          <div style={{ display: 'flex', gap: 12, marginTop: 18, flexWrap: 'wrap' }}>
+            <button className="btn btn-primary btn-sm" onClick={onTake} id={`take-${log?._id}`} style={{ padding: '12px 24px', fontSize: '1.1rem' }}>
+              I TOOK THIS MEDICINE
             </button>
-            <Link href={`/verify?logId=${log?._id}`} className="btn btn-outline btn-sm">
-              Verify
+            <Link href={`/verify?logId=${log?._id}`} className="btn btn-outline btn-sm" style={{ padding: '12px 24px', fontSize: '1.1rem' }}>
+              CHECK PILL WITH CAMERA
             </Link>
           </div>
         )}
