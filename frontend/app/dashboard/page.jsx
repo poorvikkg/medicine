@@ -5,7 +5,7 @@ import { useAuth } from '@/context/AuthContext';
 import AppShell from '@/components/AppShell';
 import { dashboardAPI, logAPI, userAPI } from '@/lib/api';
 import toast from 'react-hot-toast';
-import { CheckCircle2, Clock, XCircle, Pill, AlertTriangle, ArrowLeft, Shield, Volume2 } from 'lucide-react';
+import { CheckCircle2, Clock, XCircle, Pill, ArrowLeft, Shield, Volume2 } from 'lucide-react';
 import MedicineCard from '@/components/MedicineCard';
 import VoiceAssistant from '@/components/VoiceAssistant';
 import Link from 'next/link';
@@ -97,7 +97,7 @@ export default function DashboardPage() {
     
     const u = new SpeechSynthesisUtterance(summary);
     u.lang = 'en-IN';
-    u.rate = 0.85; // slightly slower for senior friendly pace
+    u.rate = 0.85; // Slower speech rate for better clarity for elderly users.
     window.speechSynthesis.speak(u);
   };
 
@@ -111,7 +111,7 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* Dynamic Handcrafted Friendly Greeting */}
+      {/* Dynamic time-based greeting */}
       <div className="card" style={{
         marginBottom: 24,
         background: '#ffffff',
@@ -130,12 +130,12 @@ export default function DashboardPage() {
           {isViewingAsDoctor 
             ? `Reviewing patient's scheduled doses.` 
             : upcoming.length > 0 
-              ? `You have ${upcoming.length} medicine${upcoming.length > 1 ? 's' : ''} to take today.`
-              : `You have taken all your medicines scheduled for today.`}
+              ? `${upcoming.length} medicine${upcoming.length > 1 ? 's' : ''} left today.`
+              : `All medicines taken for today.`}
         </p>
       </div>
 
-      {/* Handcrafted Reassuring Senior Care Helper Note */}
+      {/* Helper text and text-to-speech for elderly users */}
       {!isViewingAsDoctor && (
         <div style={{
           marginBottom: 32,
@@ -145,8 +145,7 @@ export default function DashboardPage() {
           borderRadius: '8px',
         }}>
           <p style={{ fontSize: '1.25rem', fontWeight: 800, margin: '0 0 16px 0', lineHeight: 1.6, color: '#000000' }}>
-            We are here to help you remember your daily pills. 
-            Simply tap the black button below when you take a pill, or tap the microphone icon at the bottom right of your screen to speak to us.
+            Tap the button below when you take a pill, or tap the microphone to speak to us.
           </p>
           <button 
             onClick={speakDashboardSummary}
@@ -163,7 +162,7 @@ export default function DashboardPage() {
               lineHeight: 1.2
             }}
           >
-            <Volume2 size={36} color="#ffffff" style={{ flexShrink: 0 }} /> TAP TO HEAR SCHEDULE OUT LOUD
+            <Volume2 size={36} color="#ffffff" style={{ flexShrink: 0 }} /> HEAR SCHEDULE
           </button>
         </div>
       )}
@@ -189,13 +188,13 @@ export default function DashboardPage() {
 
       <div style={{ marginBottom: 36 }}>
         <div className="section-title" style={{ fontSize: '1.4rem', borderBottom: '3px solid #000000', paddingBottom: 10, display: 'flex', alignItems: 'center', gap: 10 }}>
-          <Clock size={22} color="#000000" /> MEDICINES YOU NEED TO TAKE TODAY
+          <Clock size={22} color="#000000" /> TODAY'S MEDICINES
         </div>
         {upcoming.length === 0 ? (
           <div className="card" style={{ textAlign: 'center', padding: 48, border: '3px dashed #000000' }}>
             <Pill size={48} style={{ marginBottom: 16, margin: '0 auto', color: '#000000' }} />
-            <p style={{ fontSize: '1.5rem', fontWeight: 800, color: '#000000' }}>No medicines left to take</p>
-            <p style={{ fontSize: '1.2rem', marginTop: 8 }}>You are all done for now!</p>
+            <p style={{ fontSize: '1.5rem', fontWeight: 800, color: '#000000' }}>No medicines left</p>
+            <p style={{ fontSize: '1.2rem', marginTop: 8 }}>You are all done!</p>
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -214,7 +213,7 @@ export default function DashboardPage() {
       {missed.length > 0 && (
         <div style={{ marginBottom: 36 }}>
           <div className="section-title" style={{ fontSize: '1.4rem', color: '#000000', borderBottom: '3px solid #000000', paddingBottom: 10, display: 'flex', alignItems: 'center', gap: 10 }}>
-            <XCircle size={22} color="#000000" /> MISSED MEDICINES TODAY
+            <XCircle size={22} color="#000000" /> MISSED TODAY
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             {missed.map(log => <MedicineCard key={log._id} log={log} status="missed" />)}
@@ -225,7 +224,7 @@ export default function DashboardPage() {
       {completed.length > 0 && (
         <div style={{ marginBottom: 36 }}>
           <div className="section-title" style={{ fontSize: '1.4rem', color: '#000000', borderBottom: '3px solid #000000', paddingBottom: 10, display: 'flex', alignItems: 'center', gap: 10 }}>
-            <CheckCircle2 size={22} color="#000000" /> MEDICINES TAKEN TODAY
+            <CheckCircle2 size={22} color="#000000" /> TAKEN TODAY
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             {completed.map(log => <MedicineCard key={log._id} log={log} status="taken" />)}
@@ -233,7 +232,7 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* Verify Promo card */}
+      {/* Link to pill verification with camera */}
       {!isViewingAsDoctor && upcoming.length > 0 && (
         <div className="card" style={{ 
           display: 'flex', 
@@ -252,11 +251,11 @@ export default function DashboardPage() {
               <span style={{ fontWeight: 800, fontSize: '1.35rem', color: '#000000' }}>Check Your Pill</span>
             </div>
             <p style={{ color: '#000000', fontSize: '1.15rem', margin: 0, lineHeight: 1.5 }}>
-              Use your phone's camera to verify you are taking the correct medicine pill.
+              Use your camera to check if you have the right pill.
             </p>
           </div>
           <Link href="/verify" className="btn btn-primary" style={{ padding: '14px 28px', fontSize: '1.2rem' }}>
-            START CAMERA CHECK
+            USE CAMERA
           </Link>
         </div>
       )}

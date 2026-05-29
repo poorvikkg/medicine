@@ -91,7 +91,7 @@ export default function MedicinesPage() {
     
     const u = new SpeechSynthesisUtterance(summary);
     u.lang = 'en-IN';
-    u.rate = 0.85; // senior friendly speech rate
+    u.rate = 0.85; // Slower speech rate for better clarity.
     window.speechSynthesis.speak(u);
   };
 
@@ -105,10 +105,10 @@ export default function MedicinesPage() {
         </div>
       )}
 
-      {/* Elder Accessible Read Aloud Prescription Button */}
+      {/* Button to read the entire prescription list out loud */}
       <div style={{ marginBottom: 24, padding: '20px', border: '3px dashed #000000', borderRadius: '8px' }}>
         <p style={{ fontSize: '1.2rem', fontWeight: 'bold', margin: '0 0 14px 0', color: '#000000' }}>
-          Would you like to hear your entire medicine list read out loud to you?
+          Hear your medicine list out loud.
         </p>
         <button 
           onClick={speakPrescriptions}
@@ -125,7 +125,7 @@ export default function MedicinesPage() {
             lineHeight: 1.2
           }}
         >
-          <Volume2 size={36} color="#ffffff" style={{ flexShrink: 0 }} /> TAP TO HEAR MEDICINES OUT LOUD
+          <Volume2 size={36} color="#ffffff" style={{ flexShrink: 0 }} /> HEAR MEDICINES
         </button>
       </div>
 

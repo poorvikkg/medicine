@@ -1,6 +1,6 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
-import { Mic, MicOff, Volume2, X, Sparkles } from 'lucide-react';
+import { Mic, MicOff, Volume2 } from 'lucide-react';
 
 const getResponse = (text, meds) => {
   const q = text.toLowerCase();

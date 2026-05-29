@@ -25,7 +25,7 @@ export default function MedicineCard({ log, showActions = false, onTake, status:
     const text = `${med.name || 'Medicine'}. Dose: ${med.dosage}. Instructions: ${med.instructions || 'No special instructions'}. Scheduled for ${time}. Status is: ${cfg.label}.`;
     const u = new SpeechSynthesisUtterance(text);
     u.lang = 'en-IN';
-    u.rate = 0.85; // Slower for elderly accessibility
+    u.rate = 0.85; // Slower speech rate for better clarity.
     window.speechSynthesis.speak(u);
   };
 
@@ -79,10 +79,10 @@ export default function MedicineCard({ log, showActions = false, onTake, status:
         {showActions && key === 'pending' && (
           <div style={{ display: 'flex', gap: 12, marginTop: 18, flexWrap: 'wrap' }}>
             <button className="btn btn-primary btn-sm" onClick={onTake} id={`take-${log?._id}`} style={{ padding: '12px 24px', fontSize: '1.1rem' }}>
-              I TOOK THIS MEDICINE
+              I TOOK THIS
             </button>
             <Link href={`/verify?logId=${log?._id}`} className="btn btn-outline btn-sm" style={{ padding: '12px 24px', fontSize: '1.1rem' }}>
-              CHECK PILL WITH CAMERA
+              CHECK PILL
             </Link>
           </div>
         )}

@@ -43,7 +43,7 @@
 }
 
 html { 
-  font-size: 18px; /* Larger base font size for elderly readability */
+  font-size: 16px; 
   scroll-behavior: smooth; 
 }
 
@@ -63,11 +63,11 @@ h1, h2, h3, h4 {
   font-weight: 800;
 }
 
-h1 { font-size: 2.6rem; line-height: 1.2; margin-bottom: 12px; }
-h2 { font-size: 2.0rem; margin-bottom: 8px; }
-h3 { font-size: 1.5rem; margin-bottom: 6px; }
-h4 { font-size: 1.25rem; margin-bottom: 4px; }
-p  { font-size: 1.15rem; color: #000000; font-weight: 600; line-height: 1.6; }
+h1 { font-size: 2.2rem; line-height: 1.2; margin-bottom: 12px; }
+h2 { font-size: 1.8rem; margin-bottom: 8px; }
+h3 { font-size: 1.4rem; margin-bottom: 6px; }
+h4 { font-size: 1.1rem; margin-bottom: 4px; }
+p  { font-size: 1rem; color: #000000; font-weight: 600; line-height: 1.6; }
 
 /* ─── Layout ─────────────────────────────────────────────────────── */
 .app-shell {
@@ -138,7 +138,7 @@ p  { font-size: 1.15rem; color: #000000; font-weight: 600; line-height: 1.6; }
   border-radius: 6px;
   cursor: pointer;
   font-family: inherit;
-  font-size: 1.15rem; /* Large button text for elderly */
+  font-size: 1rem;
   font-weight: 800;
   padding: 14px 28px;
   transition: none;
@@ -218,7 +218,7 @@ p  { font-size: 1.15rem; color: #000000; font-weight: 600; line-height: 1.6; }
   border: 3px solid #000000;
   border-radius: 6px;
   font-family: inherit;
-  font-size: 1.2rem; /* Larger input text for ease of typing */
+  font-size: 1rem;
   background: #ffffff;
   color: #000000;
   width: 100%;
@@ -276,7 +276,7 @@ select.form-input { cursor: pointer; }
 
 .stat-value {
   font-family: var(--font-outfit), sans-serif;
-  font-size: 2.8rem; /* Extremely large stat values for elders */
+  font-size: 2.2rem;
   font-weight: 800;
   line-height: 1;
   color: #000000;
@@ -292,7 +292,7 @@ select.form-input { cursor: pointer; }
 /* ─── Section title ──────────────────────────────────────────────── */
 .section-title {
   font-family: var(--font-outfit), sans-serif;
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-weight: 800;
   color: #000000;
   text-transform: uppercase;

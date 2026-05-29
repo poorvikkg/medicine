@@ -4,7 +4,7 @@ import { useSearchParams } from 'next/navigation';
 import AppShell from '@/components/AppShell';
 import { logAPI } from '@/lib/api';
 import toast from 'react-hot-toast';
-import { Camera, Upload, CheckCircle2, XCircle, RotateCcw, AlertCircle, Info, Volume2 } from 'lucide-react';
+import { Camera, Upload, CheckCircle2, XCircle, RotateCcw, AlertCircle } from 'lucide-react';
 import Webcam from 'react-webcam';
 import Link from 'next/link';
 
@@ -81,11 +81,11 @@ function VerifyContent() {
           <div className="card" style={{ textAlign: 'center', padding: 40, border: '3px dashed #000000' }}>
             <AlertCircle size={48} color="#000000" style={{ marginBottom: 16, margin: '0 auto' }} />
             <h3 style={{ marginBottom: 12, fontSize: '1.6rem', fontWeight: 900 }}>No medicine selected</h3>
-            <p style={{ color: '#000000', fontSize: '1.25rem', lineHeight: 1.5, marginBottom: 24, fontWeight: 'bold' }}>
-              Please go back to your main schedule screen and tap "CHECK PILL WITH CAMERA" next to the medicine you want to take.
+            <p style={{ color: '#000000', fontSize: '1.25rem', lineHeight: 1.5, margin: '0 auto 24px', fontWeight: 'bold', maxWidth: 400 }}>
+              Go to your schedule and tap "CHECK PILL" next to a medicine.
             </p>
             <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
-              <Link href="/dashboard" className="btn btn-primary">GO TO HOME SCHEDULE</Link>
+              <Link href="/dashboard" className="btn btn-primary">GO TO SCHEDULE</Link>
             </div>
           </div>
         ) : (
@@ -98,7 +98,7 @@ function VerifyContent() {
               textAlign: 'center',
             }}>
               <p style={{ fontSize: '1.2rem', fontWeight: 'bold', margin: 0 }}>
-                Don't worry, we are here to help check your pill. Choose one of the options below to get started.
+                Choose how to check your pill.
               </p>
             </div>
 
@@ -106,12 +106,12 @@ function VerifyContent() {
               <button className={`btn ${mode === 'upload' ? 'btn-primary' : 'btn-outline'} btn-full`}
                 onClick={() => { setMode('upload'); setResult(null); }}
                 style={{ fontSize: '1.15rem', padding: '14px 20px' }}>
-                UPLOAD A PHOTO
+                UPLOAD PHOTO
               </button>
               <button className={`btn ${mode === 'camera' ? 'btn-primary' : 'btn-outline'} btn-full`}
                 onClick={() => { setMode('camera'); setResult(null); }}
                 style={{ fontSize: '1.15rem', padding: '14px 20px' }}>
-                USE YOUR CAMERA
+                USE CAMERA
               </button>
             </div>
 
@@ -129,7 +129,7 @@ function VerifyContent() {
                       background: '#ffffff',
                     }}>
                       <Upload size={48} style={{ marginBottom: 16, margin: '0 auto' }} color="#000000" />
-                      <p style={{ fontWeight: 800, fontSize: '1.3rem' }}>TAP HERE TO SELECT PILL PHOTO</p>
+                      <p style={{ fontWeight: 800, fontSize: '1.3rem' }}>SELECT PHOTO</p>
                     </div>
                   )}
                 </label>
@@ -142,7 +142,7 @@ function VerifyContent() {
                   style={{ width: '100%', borderRadius: 6, maxHeight: 300, objectFit: 'cover', border: '3px solid #000000', marginBottom: 16 }}
                   videoConstraints={{ facingMode: { ideal: 'environment' } }} />
                 <button className="btn btn-primary btn-full" onClick={capture} style={{ fontSize: '1.2rem', padding: '14px' }}>
-                  <Camera size={20} color="#ffffff" style={{ marginRight: 6 }} /> TAKE THE PHOTO NOW
+                  <Camera size={20} color="#ffffff" style={{ marginRight: 6 }} /> TAKE PHOTO
                 </button>
               </div>
             )}
@@ -151,7 +151,7 @@ function VerifyContent() {
               <div style={{ display: 'flex', gap: 12, marginBottom: 20 }}>
                 <button className="btn btn-primary btn-full btn-lg" onClick={verify}
                   disabled={loading || !logId} id="verify-btn" style={{ fontSize: '1.25rem', padding: '16px' }}>
-                  {loading ? 'CHECKING PILL...' : 'CHECK THIS PILL NOW'}
+                  {loading ? 'CHECKING...' : 'CHECK PILL'}
                 </button>
                 <button className="btn btn-outline" onClick={reset} aria-label="Reset" style={{ padding: '16px' }}>
                   <RotateCcw size={22} color="#000000" />
@@ -166,12 +166,12 @@ function VerifyContent() {
                   : <XCircle size={64} color="#000000" style={{ marginBottom: 16, margin: '0 auto' }} />
                 }
                 <h2 style={{ color: '#000000', fontSize: '2.0rem', fontWeight: 900, marginBottom: 12 }}>
-                  {result.verificationResult?.isCorrect ? 'Everything looks correct!' : 'Wait, pill mismatch detected'}
+                  {result.verificationResult?.isCorrect ? 'Correct Pill' : 'Wrong Pill'}
                 </h2>
                 <p style={{ fontSize: '1.3rem', fontWeight: 700, marginBottom: 20 }}>
                   {result.verificationResult?.isCorrect 
-                    ? 'This pill matches your prescription. You can safely take it now.' 
-                    : 'This pill does not look correct. Please double check the bottle or ask a helper.'}
+                    ? 'This pill matches. It is safe to take.' 
+                    : 'This pill does not match. Ask for help.'}
                 </p>
 
                 <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 24 }}>
@@ -184,7 +184,7 @@ function VerifyContent() {
                 </div>
 
                 <button className="btn btn-outline btn-full" onClick={reset} style={{ fontSize: '1.2rem', padding: '14px' }}>
-                  <RotateCcw size={18} color="#000000" style={{ marginRight: 6 }} /> CHECK ANOTHER PILL
+                  <RotateCcw size={18} color="#000000" style={{ marginRight: 6 }} /> CHECK AGAIN
                 </button>
               </div>
             )}
