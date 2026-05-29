@@ -113,9 +113,19 @@ export default function MedicinesPage() {
         <button 
           onClick={speakPrescriptions}
           className="btn btn-primary"
-          style={{ display: 'inline-flex', gap: 10, width: '100%', fontSize: '1.25rem', padding: '14px' }}
+          style={{ 
+            display: 'inline-flex', 
+            gap: 12, 
+            width: '100%', 
+            fontSize: '2.0rem', 
+            padding: '24px 32px', 
+            border: '5px solid #000000',
+            borderRadius: '8px',
+            height: 'auto',
+            lineHeight: 1.2
+          }}
         >
-          <Volume2 size={24} color="#ffffff" /> TAP HERE TO HEAR MEDICINES OUT LOUD
+          <Volume2 size={36} color="#ffffff" style={{ flexShrink: 0 }} /> TAP TO HEAR MEDICINES OUT LOUD
         </button>
       </div>
 

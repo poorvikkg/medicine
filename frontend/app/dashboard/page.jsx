@@ -151,9 +151,19 @@ export default function DashboardPage() {
           <button 
             onClick={speakDashboardSummary}
             className="btn btn-primary"
-            style={{ display: 'inline-flex', gap: 10, width: '100%', fontSize: '1.3rem', padding: '16px' }}
+            style={{ 
+              display: 'inline-flex', 
+              gap: 12, 
+              width: '100%', 
+              fontSize: '2.0rem', 
+              padding: '24px 32px', 
+              border: '5px solid #000000',
+              borderRadius: '8px',
+              height: 'auto',
+              lineHeight: 1.2
+            }}
           >
-            <Volume2 size={24} color="#ffffff" /> TAP HERE TO HEAR YOUR SCHEDULE OUT LOUD
+            <Volume2 size={36} color="#ffffff" style={{ flexShrink: 0 }} /> TAP TO HEAR SCHEDULE OUT LOUD
           </button>
         </div>
       )}
