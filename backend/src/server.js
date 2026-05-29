@@ -65,16 +65,18 @@ app.use((req, res) => res.status(404).json({ success: false, message: 'Route not
 // Global error handler
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 5000;
-const server = app.listen(PORT, () => {
-  console.log(`MediCare API running on port ${PORT} [${process.env.NODE_ENV || 'development'}]`);
-  startScheduler();
-});
+if (!process.env.VERCEL) {
+  const PORT = process.env.PORT || 5000;
+  const server = app.listen(PORT, () => {
+    console.log(`MediCare API running on port ${PORT} [${process.env.NODE_ENV || 'development'}]`);
+    startScheduler();
+  });
 
-// Handle unhandled promise rejections
-process.on('unhandledRejection', (err) => {
-  console.error('Unhandled Rejection:', err.message);
-  server.close(() => process.exit(1));
-});
+  // Handle unhandled promise rejections
+  process.on('unhandledRejection', (err) => {
+    console.error('Unhandled Rejection:', err.message);
+    server.close(() => process.exit(1));
+  });
+}
 
 module.exports = app;
