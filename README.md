@@ -1,125 +1,24 @@
-# 💊 MediCare — AI-Powered Medicine Reminder System
+# MediCare - Medicine Reminder System
 
-A full-stack medicine reminder and verification system for elderly patients, built with Next.js, Express.js, MongoDB, Cloudinary, Firebase, and AI-powered medicine verification.
+Managing daily medication regimens is critically important but can be very challenging for elderly patients. Traditional digital solutions often fall short because of the following issues:
 
----
+* Poor accessibility due to small text, low contrast, and complex, cluttered user interfaces.
+* Lack of audio feedback, making it difficult for users with visual impairments or reading difficulties to follow their schedules.
+* The dangerous risk of patients taking the wrong pill due to confusion over similar-looking medications or memory issues.
+* General anxiety and a steep learning curve when using complex technological tools without adequate guidance.
 
-## 🗂 Project Structure
+## How We Solved It
 
-```
-medicine/
-├── backend/          # Node.js + Express REST API
-│   └── src/
-│       ├── config/       # DB, Cloudinary, Firebase
-│       ├── controllers/  # Route handlers
-│       ├── middleware/   # Auth, error handler
-│       ├── models/       # Mongoose schemas
-│       ├── routes/       # Express routers
-│       └── services/     # AI verification, OCR, scheduler
-│
-└── frontend/         # Next.js 15 + Tailwind CSS
-    ├── app/          # Pages (App Router)
-    ├── components/   # Reusable UI components
-    ├── context/      # Auth context
-    └── lib/          # Axios API client
-```
+MediCare was built from the ground up to solve these specific challenges through thoughtful design and assistive technology:
 
----
+* **High-Contrast, Accessible Design:** We completely overhauled the interface to remove gradients, complex colors, and distracting animations. The application uses a strict black-and-white, high-contrast theme with large typography to ensure maximum readability.
+* **Voice Assistant Integration:** We integrated the Web Speech API to provide audio feedback. Patients can tap large buttons to have their daily schedule or specific medication instructions read out loud to them. A microphone feature allows them to ask questions verbally instead of navigating complex menus.
+* **Camera-Based Pill Verification:** We integrated react-webcam and an AI-powered verification service (OCR and color recognition) to allow patients to verify their medication before taking it. Patients hold a pill to their camera, and the application confirms if it matches their scheduled prescription, providing immediate audio and visual reassurance.
+* **Simplified Navigation:** The interface relies on massive, highly tappable buttons, reduced text verbosity, and concise, direct instructions to eliminate confusion and reduce anxiety for non-tech-savvy users.
 
-## ⚙️ Setup
+## Technical Details
 
-### 1. Backend
+For technical setup, installation instructions, and tech stack details, please see the respective folders:
 
-```bash
-cd backend
-cp .env.example .env       # Fill in your credentials
-npm install
-npm run dev                # Runs on http://localhost:5000
-```
-
-### 2. Frontend
-
-```bash
-cd frontend
-cp .env.local .env.local   # Already configured for localhost
-npm install
-npm run dev                # Runs on http://localhost:3000
-```
-
----
-
-## 🔑 Environment Variables
-
-### Backend `.env`
-
-| Variable | Description |
-|----------|-------------|
-| `MONGO_URI` | MongoDB Atlas connection string |
-| `JWT_SECRET` | Secret for JWT signing |
-| `CLOUDINARY_*` | Cloudinary API credentials |
-| `FIREBASE_*` | Firebase Admin SDK credentials |
-| `EMAIL_*` | SMTP credentials for email alerts |
-
-### Frontend `.env.local`
-
-| Variable | Description |
-|----------|-------------|
-| `NEXT_PUBLIC_API_URL` | Backend API URL |
-| `NEXT_PUBLIC_FIREBASE_*` | Firebase web SDK credentials |
-
----
-
-## 🚀 Features
-
-| Feature | Status |
-|---------|--------|
-| JWT Authentication (patient, doctor, caregiver) | ✅ |
-| Medicine scheduling with image upload | ✅ |
-| Patient dashboard (upcoming/taken/missed) | ✅ |
-| Push notifications via Firebase FCM | ✅ |
-| AI medicine verification (color + OCR) | ✅ |
-| Camera-based verification (webcam/mobile) | ✅ |
-| Voice assistant (Web Speech API) | ✅ |
-| Family alerts for missed doses | ✅ |
-| Analytics with charts | ✅ |
-| Dose history logs | ✅ |
-| Elderly-friendly large-text UI | ✅ |
-| Mobile responsive design | ✅ |
-
----
-
-## 📡 API Endpoints
-
-| Method | Route | Description |
-|--------|-------|-------------|
-| POST | `/api/auth/register` | Register user |
-| POST | `/api/auth/login` | Login |
-| GET | `/api/auth/me` | Get current user |
-| POST | `/api/medicines` | Add medicine (doctor) |
-| GET | `/api/medicines/patient/:id` | Get patient medicines |
-| GET | `/api/medicines/today/:id` | Today's schedule |
-| PUT | `/api/logs/:id/take` | Mark dose taken |
-| POST | `/api/logs/:id/verify` | Verify with image |
-| GET | `/api/dashboard/:id` | Dashboard data |
-| GET | `/api/analytics/:id` | Analytics data |
-| GET | `/api/notifications` | Get notifications |
-| GET | `/api/notifications/family-alerts` | Family alerts |
-
----
-
-## ⚕️ Medical Disclaimer
-
-> This system is an assistive tool only. Always consult your doctor before changing medication dosage or timing. AI verification is not a substitute for professional medical advice.
-
----
-
-## 🛠 Tech Stack
-
-- **Frontend**: Next.js 15, React, Tailwind CSS, Recharts, react-webcam
-- **Backend**: Node.js, Express.js, node-cron
-- **Database**: MongoDB + Mongoose
-- **Auth**: JWT
-- **Storage**: Cloudinary
-- **Notifications**: Firebase Cloud Messaging
-- **AI/OCR**: Tesseract.js, Sharp
-- **Voice**: Web Speech API
+* [Frontend README](./frontend/README.md) - Next.js Client
+* [Backend README](./backend/README.md) - Express API & Services

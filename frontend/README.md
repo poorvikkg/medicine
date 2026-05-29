@@ -1,26 +1,40 @@
-# 💊 MediCare — Next.js Frontend Client
+# MediCare Frontend Client
 
-This directory contains the modern, elderly-friendly React & Next.js client for **MediCare**, our AI-powered medicine reminder and verification system.
+This directory contains the React and Next.js client for MediCare.
 
-## 🗂 Key Directories
+## Tech Stack
+* Next.js 15, React
+* Tailwind CSS, Vanilla CSS for custom theming
+* Recharts for Analytics
+* react-webcam for AI Verification
+* Web Speech API for Voice Assistant
 
-*   `/app` — Next.js 15 pages and app router routes
-    *   `/dashboard` — Main schedule tracking and real-time clinical alerts
-    *   `/medicines` — Regimen management and filter tools for patients & doctors
-    *   `/patients` — Caregiver directory for searching and viewing patient files
-    *   `/profile` — Account preferences, contact details, and voice language controls
-    *   `/verify` — Clinical OCR scanner and color recognition pill verification
-*   `/components` — Core interface elements (AppShell, Navigation, Voice Assistant, Medicine Card)
-*   `/context` — Authentication providers and user role states
-*   `/lib` — API clients with unified error reporting
+## Project Structure
 
-## 🚀 Running the Client
+* `/app` - Next.js 15 pages and app router routes
+    * `/dashboard` - Main schedule tracking and real-time clinical alerts
+    * `/medicines` - Regimen management and filter tools for patients and doctors
+    * `/patients` - Caregiver directory for searching and viewing patient files
+    * `/profile` - Account preferences, contact details, and voice language controls
+    * `/verify` - Clinical OCR scanner and color recognition pill verification
+* `/components` - Core interface elements (AppShell, Navigation, Voice Assistant, Medicine Card)
+* `/context` - Authentication providers and user role states
+* `/lib` - API clients with unified error reporting
 
-First, install dependencies:
+## Setup
+
+First, install the required dependencies:
 
 ```bash
 npm install
 ```
+
+Ensure your `.env.local` is configured correctly:
+
+| Variable | Description |
+|----------|-------------|
+| NEXT_PUBLIC_API_URL | Backend API URL (default: http://localhost:5000/api) |
+| NEXT_PUBLIC_FIREBASE_* | Firebase web SDK credentials |
 
 Run the development server:
 
@@ -28,11 +42,4 @@ Run the development server:
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser to view the application.
-
-## 🎨 UI & UX Design
-
-MediCare's interface is custom-tailored for elderly users:
-*   **Large, Readable Typography**: Uses the **Inter** font family with ideal contrast levels.
-*   **Intuitive Layouts**: Dynamic sidebar/navbar responsive breakpoints designed for mobile screens.
-*   **Clear Callouts**: Colors indicate morning (info/teal), afternoon (warning/orange), taken (success/green), or missed (danger/red) doses.
+Open http://localhost:3000 in your browser to view the application.
