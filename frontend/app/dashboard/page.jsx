@@ -216,7 +216,7 @@ export default function DashboardPage() {
             <XCircle size={22} color="#000000" /> MISSED TODAY
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            {missed.map(log => <MedicineCard key={log._id} log={log} status="missed" />)}
+            {missed.map(log => <MedicineCard key={log._id} log={log} status="missed" showActions={!isViewingAsDoctor} onTake={() => markTaken(log._id)} />)}
           </div>
         </div>
       )}

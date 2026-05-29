@@ -217,4 +217,4 @@ const startScheduler = () => {
   console.log('[Scheduler] All cron jobs started');
 };
 
-module.exports = { startScheduler, generateDailyLogs };
+module.exports = { startScheduler, generateDailyLogs, sendUpcomingReminders, markMissedAndAlert };

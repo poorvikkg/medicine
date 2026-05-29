@@ -76,10 +76,10 @@ export default function MedicineCard({ log, showActions = false, onTake, status:
           </p>
         )}
 
-        {showActions && key === 'pending' && (
+        {showActions && (key === 'pending' || key === 'missed') && (
           <div style={{ display: 'flex', gap: 12, marginTop: 18, flexWrap: 'wrap' }}>
             <button className="btn btn-primary btn-sm" onClick={onTake} id={`take-${log?._id}`} style={{ padding: '12px 24px', fontSize: '1.1rem' }}>
-              I TOOK THIS
+              {key === 'missed' ? 'MARK AS TAKEN' : 'I TOOK THIS'}
             </button>
             <Link href={`/verify?logId=${log?._id}`} className="btn btn-outline btn-sm" style={{ padding: '12px 24px', fontSize: '1.1rem' }}>
               CHECK PILL

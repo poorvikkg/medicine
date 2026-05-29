@@ -13,6 +13,7 @@ const medicineRoutes = require('./routes/medicineRoutes');
 const logRoutes = require('./routes/logRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
+const cronRoutes = require('./routes/cronRoutes');
 
 const path = require('path');
 
@@ -53,6 +54,7 @@ app.use('/api/medicines', medicineRoutes);
 app.use('/api/logs', logRoutes);
 app.use('/api', dashboardRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/cron', cronRoutes);
 
 // 404 handler
 app.use((req, res) => res.status(404).json({ success: false, message: 'Route not found' }));

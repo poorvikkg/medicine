@@ -13,13 +13,14 @@ const getDashboard = async (req, res, next) => {
     const endOfDay = new Date(today); endOfDay.setHours(23, 59, 59, 999);
 
     const [upcoming, completed, missed, recentAlerts] = await Promise.all([
-      MedicineLog.find({ patient: patientId, status: { $in: ['pending', 'snoozed'] }, scheduledTime: { $gte: new Date() } })
-        .populate('medicine', 'name dosage medicineImage instructions')
-        .sort({ scheduledTime: 1 }).limit(10),
+      // Use startOfDay (not now) so doses scheduled for earlier today still appear if not yet taken
+      MedicineLog.find({ patient: patientId, status: { $in: ['pending', 'snoozed'] }, scheduledTime: { $gte: startOfDay, $lte: endOfDay } })
+        .populate('medicine', 'name dosage medicineImage instructions dosageUnit')
+        .sort({ scheduledTime: 1 }).limit(20),
       MedicineLog.find({ patient: patientId, status: 'taken', scheduledTime: { $gte: startOfDay, $lte: endOfDay } })
-        .populate('medicine', 'name dosage medicineImage').sort({ takenTime: -1 }).limit(10),
+        .populate('medicine', 'name dosage medicineImage dosageUnit').sort({ takenTime: -1 }).limit(20),
       MedicineLog.find({ patient: patientId, status: 'missed', scheduledTime: { $gte: startOfDay, $lte: endOfDay } })
-        .populate('medicine', 'name dosage medicineImage').sort({ scheduledTime: -1 }),
+        .populate('medicine', 'name dosage medicineImage dosageUnit').sort({ scheduledTime: -1 }),
       FamilyAlert.find({ patient: patientId, resolved: false }).sort({ createdAt: -1 }).limit(5),
     ]);
 

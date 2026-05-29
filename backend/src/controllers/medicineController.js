@@ -35,6 +35,50 @@ const addMedicine = async (req, res, next) => {
     }
 
     const medicine = await Medicine.create(medicineData);
+
+    // Generate today's log entries immediately so they show on the dashboard
+    // without waiting for the midnight scheduler
+    try {
+      const today = new Date();
+      const dayOfWeek = today.getDay();
+      const parsedSchedule = medicineData.schedule || [];
+      const parsedDays = medicineData.daysOfWeek || [];
+      const medStartDate = new Date(medicineData.startDate);
+      medStartDate.setHours(0, 0, 0, 0);
+
+      // Only generate logs if today falls within the medicine date range and day-of-week filter
+      const todayStart = new Date(today);
+      todayStart.setHours(0, 0, 0, 0);
+      const withinRange = medStartDate <= todayStart && (!medicineData.endDate || new Date(medicineData.endDate) >= todayStart);
+      const dayAllowed = !parsedDays.length || parsedDays.includes(dayOfWeek);
+
+      if (withinRange && dayAllowed) {
+        for (const slot of parsedSchedule) {
+          const [hours, minutes] = slot.time.split(':').map(Number);
+          const scheduledTime = new Date(today);
+          scheduledTime.setHours(hours, minutes, 0, 0);
+
+          // Avoid duplicates
+          const exists = await MedicineLog.findOne({
+            medicine: medicine._id,
+            patient: medicine.patient,
+            scheduledTime,
+          });
+          if (!exists) {
+            await MedicineLog.create({
+              patient: medicine.patient,
+              medicine: medicine._id,
+              scheduledTime,
+              status: 'pending',
+            });
+          }
+        }
+      }
+    } catch (logErr) {
+      // Log generation failure should not block the medicine creation response
+      console.error('[addMedicine] Failed to generate today\'s logs:', logErr.message);
+    }
+
     res.status(201).json({ success: true, medicine });
   } catch (err) {
     next(err);
