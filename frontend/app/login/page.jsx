@@ -74,30 +74,63 @@ export default function LoginPage() {
 
         {/* ── Demo Credentials Banner ── */}
         <div style={{
-          background: '#f0fdf4',
-          border: '2px dashed #16a34a',
-          borderRadius: '10px',
-          padding: '16px 20px',
+          background: '#1a1a2e',
+          borderRadius: '12px',
+          padding: '20px 22px',
           marginBottom: '8px',
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
-            <span style={{ fontSize: '1.1rem' }}>🔑</span>
-            <span style={{ fontWeight: 900, fontSize: '1.0rem', color: '#15803d', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
-              Recruiter Demo Access
-            </span>
+          <div style={{
+            fontSize: '0.72rem',
+            fontWeight: 700,
+            color: '#6b7280',
+            letterSpacing: '0.15em',
+            textTransform: 'uppercase',
+            marginBottom: 14,
+          }}>
+            Demo Access
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginBottom: 14 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span style={{ fontSize: '0.85rem', color: '#166534', fontWeight: 700, minWidth: 72 }}>📧 Email:</span>
-              <code style={{ background: '#dcfce7', padding: '2px 8px', borderRadius: 4, fontSize: '0.95rem', color: '#14532d', fontWeight: 700 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 18 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+              <span style={{
+                fontSize: '0.72rem',
+                fontWeight: 700,
+                color: '#6b7280',
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+                minWidth: 74,
+              }}>
+                EMAIL
+              </span>
+              <span style={{
+                fontFamily: 'monospace',
+                fontSize: '0.92rem',
+                fontWeight: 600,
+                color: '#e879f9',
+                letterSpacing: '0.01em',
+              }}>
                 {DEMO_EMAIL}
-              </code>
+              </span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span style={{ fontSize: '0.85rem', color: '#166534', fontWeight: 700, minWidth: 72 }}>🔒 Password:</span>
-              <code style={{ background: '#dcfce7', padding: '2px 8px', borderRadius: 4, fontSize: '0.95rem', color: '#14532d', fontWeight: 700 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+              <span style={{
+                fontSize: '0.72rem',
+                fontWeight: 700,
+                color: '#6b7280',
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+                minWidth: 74,
+              }}>
+                PASSWORD
+              </span>
+              <span style={{
+                fontFamily: 'monospace',
+                fontSize: '0.92rem',
+                fontWeight: 600,
+                color: '#e879f9',
+                letterSpacing: '0.01em',
+              }}>
                 {DEMO_PASSWORD}
-              </code>
+              </span>
             </div>
           </div>
           <button
@@ -105,22 +138,22 @@ export default function LoginPage() {
             onClick={fillDemo}
             id="demo-autofill-btn"
             style={{
-              background: '#16a34a',
-              color: '#ffffff',
+              background: '#ffffff',
+              color: '#000000',
               border: 'none',
-              borderRadius: '6px',
-              padding: '8px 18px',
+              borderRadius: '8px',
+              padding: '11px 18px',
               fontWeight: 800,
-              fontSize: '0.9rem',
+              fontSize: '0.95rem',
               cursor: 'pointer',
-              letterSpacing: '0.04em',
+              letterSpacing: '0.01em',
               width: '100%',
-              transition: 'background 0.2s',
+              transition: 'background 0.15s, transform 0.1s',
             }}
-            onMouseOver={e => e.currentTarget.style.background = '#15803d'}
-            onMouseOut={e => e.currentTarget.style.background = '#16a34a'}
+            onMouseOver={e => { e.currentTarget.style.background = '#f3f4f6'; e.currentTarget.style.transform = 'scale(1.01)'; }}
+            onMouseOut={e => { e.currentTarget.style.background = '#ffffff'; e.currentTarget.style.transform = 'scale(1)'; }}
           >
-            ⚡ Click to Auto-Fill Credentials
+            Use Demo Credentials
           </button>
         </div>
 
