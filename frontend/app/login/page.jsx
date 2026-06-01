@@ -9,9 +9,14 @@ import { Eye, EyeOff, Lock, Mail, Pill } from 'lucide-react';
 export default function LoginPage() {
   const { login } = useAuth();
   const router = useRouter();
+  const DEMO_EMAIL = 'demo@medicare.com';
+  const DEMO_PASSWORD = 'Demo@1234';
+
   const [form, setForm] = useState({ email: '', password: '' });
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const fillDemo = () => setForm({ email: DEMO_EMAIL, password: DEMO_PASSWORD });
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -65,6 +70,58 @@ export default function LoginPage() {
           <p style={{ fontSize: '1.25rem', color: '#000000', fontWeight: 'bold' }}>
             Enter your details to access your schedules.
           </p>
+        </div>
+
+        {/* ── Demo Credentials Banner ── */}
+        <div style={{
+          background: '#f0fdf4',
+          border: '2px dashed #16a34a',
+          borderRadius: '10px',
+          padding: '16px 20px',
+          marginBottom: '8px',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+            <span style={{ fontSize: '1.1rem' }}>🔑</span>
+            <span style={{ fontWeight: 900, fontSize: '1.0rem', color: '#15803d', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+              Recruiter Demo Access
+            </span>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginBottom: 14 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ fontSize: '0.85rem', color: '#166534', fontWeight: 700, minWidth: 72 }}>📧 Email:</span>
+              <code style={{ background: '#dcfce7', padding: '2px 8px', borderRadius: 4, fontSize: '0.95rem', color: '#14532d', fontWeight: 700 }}>
+                {DEMO_EMAIL}
+              </code>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ fontSize: '0.85rem', color: '#166534', fontWeight: 700, minWidth: 72 }}>🔒 Password:</span>
+              <code style={{ background: '#dcfce7', padding: '2px 8px', borderRadius: 4, fontSize: '0.95rem', color: '#14532d', fontWeight: 700 }}>
+                {DEMO_PASSWORD}
+              </code>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={fillDemo}
+            id="demo-autofill-btn"
+            style={{
+              background: '#16a34a',
+              color: '#ffffff',
+              border: 'none',
+              borderRadius: '6px',
+              padding: '8px 18px',
+              fontWeight: 800,
+              fontSize: '0.9rem',
+              cursor: 'pointer',
+              letterSpacing: '0.04em',
+              width: '100%',
+              transition: 'background 0.2s',
+            }}
+            onMouseOver={e => e.currentTarget.style.background = '#15803d'}
+            onMouseOut={e => e.currentTarget.style.background = '#16a34a'}
+          >
+            ⚡ Click to Auto-Fill Credentials
+          </button>
         </div>
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
