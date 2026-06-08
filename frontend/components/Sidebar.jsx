@@ -39,8 +39,7 @@ export default function Sidebar({ open, onClose }) {
           style={{ 
             position: 'fixed', 
             inset: 0, 
-            background: 'rgba(5, 7, 15, 0.6)', 
-            backdropFilter: 'blur(4px)',
+            background: 'rgba(0, 0, 0, 0.5)', 
             zIndex: 99 
           }}
         />

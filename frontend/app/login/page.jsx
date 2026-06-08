@@ -34,185 +34,136 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="auth-page" style={{ background: '#ffffff' }}>
-      <div className="auth-card" style={{ border: '3px solid #000000', padding: '40px', background: '#ffffff' }}>
+    <div className="auth-page">
+      <div className="auth-card">
         
         {/* Portal Branding */}
-        <div style={{ textAlign: 'center', marginBottom: 32 }}>
+        <div style={{ textAlign: 'center', marginBottom: 28 }}>
           <div style={{
             display: 'inline-flex',
             alignItems: 'center',
             justifyContent: 'center',
-            width: 50,
-            height: 50,
-            borderRadius: '6px',
-            background: '#ffffff',
-            border: '3px solid #000000',
-            marginBottom: 14
+            width: 44,
+            height: 44,
+            borderRadius: 'var(--radius)',
+            background: 'var(--clr-primary-lt)',
+            marginBottom: 12
           }}>
-            <Pill size={26} color="#000000" />
+            <Pill size={22} color="var(--clr-primary)" />
           </div>
           <div style={{
-            fontSize: '1.0rem', fontWeight: 900, letterSpacing: '0.12em',
-            textTransform: 'uppercase', color: '#000000',
-            marginBottom: 8,
+            fontSize: '0.8rem', fontWeight: 600, letterSpacing: '0.05em',
+            textTransform: 'uppercase', color: 'var(--clr-muted)',
+            marginBottom: 6,
           }}>
-            MEDICARE
+            MediCare
           </div>
           <h1 style={{ 
-            fontSize: '2.4rem', 
-            fontWeight: 900, 
-            color: '#000000',
-            margin: '0 0 10px 0' 
+            fontSize: '1.6rem', 
+            fontWeight: 600, 
+            margin: '0 0 4px 0' 
           }}>
             Sign In
           </h1>
-          <p style={{ fontSize: '1.25rem', color: '#000000', fontWeight: 'bold' }}>
-            Enter your details to access your schedules.
+          <p style={{ color: 'var(--clr-muted)', margin: 0 }}>
+            Sign in to manage your medication schedule.
           </p>
         </div>
 
         {/* ── Demo Credentials Banner ── */}
         <div style={{
-          background: '#1a1a2e',
-          borderRadius: '12px',
-          padding: '20px 22px',
-          marginBottom: '8px',
+          background: 'var(--clr-surface-2)',
+          border: '1px solid var(--clr-border)',
+          borderRadius: 'var(--radius)',
+          padding: '16px',
+          marginBottom: '20px',
         }}>
           <div style={{
-            fontSize: '0.72rem',
+            fontSize: '0.75rem',
             fontWeight: 700,
-            color: '#6b7280',
-            letterSpacing: '0.15em',
+            color: 'var(--clr-text)',
+            letterSpacing: '0.05em',
             textTransform: 'uppercase',
-            marginBottom: 14,
+            marginBottom: 10,
           }}>
             Demo Access
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 18 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-              <span style={{
-                fontSize: '0.72rem',
-                fontWeight: 700,
-                color: '#6b7280',
-                letterSpacing: '0.1em',
-                textTransform: 'uppercase',
-                minWidth: 74,
-              }}>
-                EMAIL
-              </span>
-              <span style={{
-                fontFamily: 'monospace',
-                fontSize: '0.92rem',
-                fontWeight: 600,
-                color: '#e879f9',
-                letterSpacing: '0.01em',
-              }}>
-                {DEMO_EMAIL}
-              </span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 14 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: '0.8rem', color: 'var(--clr-muted)' }}>Email:</span>
+              <span style={{ fontFamily: 'monospace', fontSize: '0.85rem', fontWeight: 500 }}>{DEMO_EMAIL}</span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-              <span style={{
-                fontSize: '0.72rem',
-                fontWeight: 700,
-                color: '#6b7280',
-                letterSpacing: '0.1em',
-                textTransform: 'uppercase',
-                minWidth: 74,
-              }}>
-                PASSWORD
-              </span>
-              <span style={{
-                fontFamily: 'monospace',
-                fontSize: '0.92rem',
-                fontWeight: 600,
-                color: '#e879f9',
-                letterSpacing: '0.01em',
-              }}>
-                {DEMO_PASSWORD}
-              </span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: '0.8rem', color: 'var(--clr-muted)' }}>Password:</span>
+              <span style={{ fontFamily: 'monospace', fontSize: '0.85rem', fontWeight: 500 }}>{DEMO_PASSWORD}</span>
             </div>
           </div>
           <button
             type="button"
             onClick={fillDemo}
+            className="btn btn-outline btn-full btn-sm"
             id="demo-autofill-btn"
-            style={{
-              background: '#ffffff',
-              color: '#000000',
-              border: 'none',
-              borderRadius: '8px',
-              padding: '11px 18px',
-              fontWeight: 800,
-              fontSize: '0.95rem',
-              cursor: 'pointer',
-              letterSpacing: '0.01em',
-              width: '100%',
-              transition: 'background 0.15s, transform 0.1s',
-            }}
-            onMouseOver={e => { e.currentTarget.style.background = '#f3f4f6'; e.currentTarget.style.transform = 'scale(1.01)'; }}
-            onMouseOut={e => { e.currentTarget.style.background = '#ffffff'; e.currentTarget.style.transform = 'scale(1)'; }}
           >
             Use Demo Credentials
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
           
           <div className="form-group">
-            <label className="form-label" htmlFor="email" style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>Email Address</label>
+            <label className="form-label" htmlFor="email">Email Address</label>
             <div style={{ position: 'relative' }}>
-              <Mail size={20} color="#000000" style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)' }} />
+              <Mail size={16} color="var(--clr-subtle)" style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)' }} />
               <input
                 id="email" name="email" type="email"
                 className="form-input" placeholder="name@example.com"
                 value={form.email} onChange={handleChange}
                 required autoComplete="email"
-                style={{ paddingLeft: 44, fontSize: '1.25rem' }}
+                style={{ paddingLeft: 38 }}
               />
             </div>
           </div>
 
           <div className="form-group">
-            <label className="form-label" htmlFor="password" style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>Password</label>
+            <label className="form-label" htmlFor="password">Password</label>
             <div style={{ position: 'relative' }}>
-              <Lock size={20} color="#000000" style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)' }} />
+              <Lock size={16} color="var(--clr-subtle)" style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)' }} />
               <input
                 id="password" name="password"
                 type={showPass ? 'text' : 'password'}
                 className="form-input" placeholder="Enter password"
                 value={form.password} onChange={handleChange}
-                required style={{ paddingLeft: 44, paddingRight: 46, fontSize: '1.25rem' }}
+                required style={{ paddingLeft: 38, paddingRight: 38 }}
               />
               <button
                 type="button"
                 onClick={() => setShowPass(!showPass)}
                 style={{
-                  position: 'absolute', right: 14, top: '50%',
+                  position: 'absolute', right: 12, top: '50%',
                   transform: 'translateY(-50%)',
                   background: 'none', border: 'none', cursor: 'pointer',
-                  color: '#000000', display: 'flex', padding: 0,
+                  color: 'var(--clr-subtle)', display: 'flex', padding: 0,
                 }}
                 aria-label={showPass ? 'Hide password' : 'Show password'}
               >
-                {showPass ? <EyeOff size={22} color="#000000" /> : <Eye size={22} color="#000000" />}
+                {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
           </div>
 
           <button
-            type="submit" className="btn btn-primary btn-full btn-lg"
+            type="submit" className="btn btn-primary btn-full"
             disabled={loading} id="login-btn"
-            style={{ marginTop: 8 }}
+            style={{ marginTop: 4 }}
           >
-            {loading ? 'VERIFYING...' : 'SIGN IN NOW'}
+            {loading ? 'Signing In...' : 'Sign In'}
           </button>
         </form>
 
-        <div style={{ marginTop: 30, textAlign: 'center', borderTop: '3px solid #000000', paddingTop: 20 }}>
-          <p style={{ color: '#000000', fontSize: '1.2rem', margin: 0, fontWeight: 'bold' }}>
+        <div style={{ marginTop: 24, textAlign: 'center', borderTop: '1px solid var(--clr-border)', paddingTop: 16 }}>
+          <p style={{ fontSize: '0.9rem', margin: 0 }}>
             Need an account?{' '}
-            <Link href="/register" style={{ color: '#000000', fontWeight: 900, textDecoration: 'underline' }}>
+            <Link href="/register" style={{ color: 'var(--clr-primary)', fontWeight: 600, textDecoration: 'underline' }}>
               Register Here
             </Link>
           </p>

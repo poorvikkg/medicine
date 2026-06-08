@@ -151,54 +151,36 @@ function VerifyContent() {
 
   if (authLoading || fetchingLogs) {
     return (
-      <AppShell title="Check Your Pill">
+      <AppShell title="Pill Verification">
         <div className="loading-screen" style={{ minHeight: '60vh' }}>
           <div className="spinner" />
-          <p style={{ fontWeight: 800, fontSize: '1.2rem', marginTop: 16 }}>Loading prescription schedule...</p>
         </div>
       </AppShell>
     );
   }
 
   return (
-    <AppShell title="Check Your Pill">
+    <AppShell title="Pill Verification">
       <div style={{ maxWidth: 560, margin: '0 auto' }}>
         
         {!selectedLogId ? (
-          <div className="card" style={{ textAlign: 'center', padding: 40, border: '3px dashed #000000' }}>
-            <AlertCircle size={48} color="#000000" style={{ marginBottom: 16, margin: '0 auto' }} />
-            <h3 style={{ marginBottom: 12, fontSize: '1.6rem', fontWeight: 900 }}>No medicine to check</h3>
-            <p style={{ color: '#000000', fontSize: '1.25rem', lineHeight: 1.5, margin: '0 auto 24px', fontWeight: 'bold', maxWidth: 400 }}>
-              You have no pending medicines left to take today. Excellent work!
-            </p>
-            <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
-              <Link href="/dashboard" className="btn btn-primary btn-full">GO TO DASHBOARD</Link>
-            </div>
+          <div className="card" style={{ textAlign: 'center', padding: 40 }}>
+            <AlertCircle size={36} style={{ marginBottom: 12, margin: '0 auto', color: 'var(--clr-muted)' }} />
+            <h3 style={{ marginBottom: 8 }}>No pending medicines</h3>
+            <p style={{ color: 'var(--clr-muted)', marginBottom: 20 }}>All doses for today are complete.</p>
+            <Link href="/dashboard" className="btn btn-primary">Back to Dashboard</Link>
           </div>
         ) : (
           <>
-            {/* Pill Selection Dropdown */}
-            <div className="card" style={{ border: '3px solid #000000', padding: '20px', marginBottom: 24 }}>
-              <label htmlFor="medicine-select" className="form-label" style={{ display: 'block', fontSize: '1.2rem', fontWeight: 800, marginBottom: 10 }}>
-                SELECT MEDICINE TO CHECK:
+            <div className="card" style={{ marginBottom: 24 }}>
+              <label htmlFor="medicine-select" className="form-label" style={{ display: 'block', marginBottom: 8 }}>
+                Select medicine
               </label>
-              
               <select
                 id="medicine-select"
                 className="form-input"
                 value={selectedLogId}
                 onChange={handleSelectChange}
-                style={{
-                  fontSize: '1.25rem',
-                  padding: '14px',
-                  border: '3px solid #000000',
-                  borderRadius: '6px',
-                  width: '100%',
-                  background: '#ffffff',
-                  color: '#000000',
-                  fontWeight: 'bold',
-                  cursor: 'pointer'
-                }}
               >
                 {selectedLog && !pendingLogs.some(l => l._id === selectedLog._id) && (
                   <option value={selectedLog._id}>
@@ -213,12 +195,12 @@ function VerifyContent() {
               </select>
 
               {selectedLog && (
-                <div style={{ marginTop: 16, padding: '12px', border: '2px dashed #000000', borderRadius: '4px', background: '#ffffff' }}>
-                  <p style={{ margin: 0, fontSize: '1.15rem', fontWeight: 800 }}>
+                <div style={{ marginTop: 16, padding: '14px', border: '1px solid var(--clr-border)', borderRadius: 'var(--radius)', background: 'var(--clr-surface-2)' }}>
+                  <p style={{ margin: 0, fontSize: '0.95rem', fontWeight: 600 }}>
                     Prescribed Dosage: {selectedLog.medicine?.dosage}
                   </p>
                   {selectedLog.medicine?.instructions && (
-                    <p style={{ margin: '4px 0 0', fontSize: '1.1rem', fontWeight: 700 }}>
+                    <p style={{ margin: '4px 0 0', fontSize: '0.9rem', color: 'var(--clr-muted)' }}>
                       Instructions: {selectedLog.medicine.instructions}
                     </p>
                   )}
@@ -226,46 +208,33 @@ function VerifyContent() {
               )}
             </div>
 
-            <div style={{
-              marginBottom: 24,
-              padding: '16px 20px',
-              border: '3px solid #000000',
-              borderRadius: '8px',
-              textAlign: 'center',
-            }}>
-              <p style={{ fontSize: '1.2rem', fontWeight: 'bold', margin: 0 }}>
-                Choose how to check your pill.
-              </p>
-            </div>
-
             <div style={{ display: 'flex', gap: 12, marginBottom: 24 }}>
               <button className={`btn ${mode === 'upload' ? 'btn-primary' : 'btn-outline'} btn-full`}
-                onClick={() => { setMode('upload'); setResult(null); }}
-                style={{ fontSize: '1.15rem', padding: '14px 20px' }}>
-                UPLOAD PHOTO
+                onClick={() => { setMode('upload'); setResult(null); }}>
+                Upload Photo
               </button>
               <button className={`btn ${mode === 'camera' ? 'btn-primary' : 'btn-outline'} btn-full`}
-                onClick={() => { setMode('camera'); setResult(null); }}
-                style={{ fontSize: '1.15rem', padding: '14px 20px' }}>
-                USE CAMERA
+                onClick={() => { setMode('camera'); setResult(null); }}>
+                Use Camera
               </button>
             </div>
 
             {mode === 'upload' && !result && (
-              <div className="card" style={{ marginBottom: 20, border: '3px solid #000000' }}>
+              <div className="card" style={{ marginBottom: 20 }}>
                 <label style={{ cursor: 'pointer', display: 'block' }}>
                   <input type="file" accept="image/*" onChange={handleFile} style={{ display: 'none' }} />
                   {imagePreview ? (
                     <img src={imagePreview} alt="Preview"
-                      style={{ width: '100%', maxHeight: 300, objectFit: 'contain', borderRadius: 6, border: '3px solid #000000' }} />
+                      style={{ width: '100%', maxHeight: 300, objectFit: 'contain', borderRadius: 'var(--radius)', border: '1px solid var(--clr-border)' }} />
                   ) : (
                     <div style={{
-                      border: '3px dashed #000000', borderRadius: 6,
-                      padding: 48, textAlign: 'center', color: '#000000',
-                      background: '#ffffff',
+                      border: '1px dashed var(--clr-border)', borderRadius: 'var(--radius-lg)',
+                      padding: 40, textAlign: 'center',
+                      background: 'var(--clr-surface-2)',
                     }}>
-                      <Upload size={48} style={{ marginBottom: 16, margin: '0 auto' }} color="#000000" />
-                      <p style={{ fontWeight: 800, fontSize: '1.3rem' }}>SELECT PHOTO</p>
+                      <Upload size={36} style={{ marginBottom: 12, margin: '0 auto', color: 'var(--clr-subtle)' }} />
+                      <p style={{ fontWeight: 500, fontSize: '1.05rem', color: 'var(--clr-text)' }}>Select Photo</p>
+                      <p style={{ fontSize: '0.85rem', color: 'var(--clr-muted)', marginTop: 4 }}>JPEG, PNG up to 5MB</p>
                     </div>
                   )}
                 </label>
@@ -273,79 +242,64 @@ function VerifyContent() {
             )}
 
             {mode === 'camera' && !result && (
-              <div className="card" style={{ marginBottom: 20, textAlign: 'center', border: '3px solid #000000' }}>
+              <div className="card" style={{ marginBottom: 20, textAlign: 'center' }}>
                 <Webcam ref={webcamRef} screenshotFormat="image/jpeg"
-                  style={{ width: '100%', borderRadius: 6, maxHeight: 300, objectFit: 'cover', border: '3px solid #000000', marginBottom: 16 }}
+                  style={{ width: '100%', borderRadius: 6, maxHeight: 300, objectFit: 'cover', marginBottom: 16 }}
                   videoConstraints={{ facingMode: { ideal: 'environment' } }} />
-                <button className="btn btn-primary btn-full" onClick={capture} style={{ fontSize: '1.2rem', padding: '14px' }}>
-                  <Camera size={20} color="#ffffff" style={{ marginRight: 6 }} /> TAKE PHOTO
+                <button className="btn btn-primary btn-full" onClick={capture}>
+                  <Camera size={16} /> Take Photo
                 </button>
               </div>
             )}
 
             {imagePreview && !result && (
               <div style={{ display: 'flex', gap: 12, marginBottom: 20 }}>
-                <button className="btn btn-primary btn-full btn-lg" onClick={verify}
-                  disabled={loading || !selectedLogId} id="verify-btn" style={{ fontSize: '1.25rem', padding: '16px' }}>
-                  {loading ? 'CHECKING...' : 'CHECK PILL'}
+                <button className="btn btn-primary btn-full" onClick={verify}
+                  disabled={loading || !selectedLogId} id="verify-btn">
+                  {loading ? 'Checking...' : 'Check Pill'}
                 </button>
-                <button className="btn btn-outline" onClick={reset} aria-label="Reset" style={{ padding: '16px' }}>
-                  <RotateCcw size={22} color="#000000" />
+                <button className="btn btn-outline" onClick={reset} aria-label="Reset">
+                  <RotateCcw size={18} />
                 </button>
               </div>
             )}
 
             {result && (
-              <div className="verify-result" style={{ border: '4px solid #000000', padding: '32px', background: '#ffffff' }}>
+              <div className="card" style={{ textAlign: 'center', padding: 28 }}>
                 {result.verificationResult?.isCorrect
-                  ? <CheckCircle2 size={64} color="#000000" style={{ marginBottom: 16, margin: '0 auto' }} />
-                  : <XCircle size={64} color="#000000" style={{ marginBottom: 16, margin: '0 auto' }} />
+                  ? <CheckCircle2 size={44} style={{ marginBottom: 12, margin: '0 auto', color: 'var(--clr-success)' }} />
+                  : <XCircle size={44} style={{ marginBottom: 12, margin: '0 auto', color: 'var(--clr-danger)' }} />
                 }
-                <h2 style={{ color: '#000000', fontSize: '2.0rem', fontWeight: 900, marginBottom: 12 }}>
-                  {result.verificationResult?.isCorrect ? 'Correct Pill' : 'Wrong Pill'}
+                <h2 style={{ fontSize: '1.4rem', fontWeight: 600, marginBottom: 8 }}>
+                  {result.verificationResult?.isCorrect ? 'Correct pill' : 'Pill mismatch'}
                 </h2>
-                <p style={{ fontSize: '1.3rem', fontWeight: 700, marginBottom: 20 }}>
+                <p style={{ color: 'var(--clr-muted)', marginBottom: 20 }}>
                   {result.verificationResult?.isCorrect 
-                    ? 'This pill matches. It is safe to take.' 
-                    : 'This pill does not match. Ask for help.'}
+                    ? 'This pill matches your prescription.' 
+                    : 'This pill does not match. Please double-check.'}
                 </p>
 
-                <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 24 }}>
-                  <span className="badge" style={{ fontSize: '1.05rem', fontWeight: 800, padding: '6px 14px', border: '2.5px solid #000000' }}>
-                    Color Check: {result.verificationResult?.colorMatch ? 'Matches' : 'Different'}
+                <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 24 }}>
+                  <span className="badge badge-info">
+                    Color: {result.verificationResult?.colorMatch ? 'Match' : 'Different'}
                   </span>
-                  <span className="badge" style={{ fontSize: '1.05rem', fontWeight: 800, padding: '6px 14px', border: '2.5px solid #000000' }}>
-                    Text Check: {result.verificationResult?.ocrMatch ? 'Matches' : 'Different'}
+                  <span className="badge badge-info">
+                    Text: {result.verificationResult?.ocrMatch ? 'Match' : 'Different'}
                   </span>
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginTop: 12 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                   {result.verificationResult?.isCorrect ? (
-                    <button 
-                      className="btn btn-primary btn-full btn-lg" 
-                      onClick={handleMarkTaken}
-                      disabled={loading}
-                      style={{ fontSize: '1.35rem', padding: '18px' }}
-                    >
-                      {loading ? 'LOGGING TAKEN...' : 'I TOOK THIS MEDICINE'}
+                    <button className="btn btn-primary btn-full" onClick={handleMarkTaken} disabled={loading}>
+                      {loading ? 'Saving...' : 'Mark as taken'}
                     </button>
                   ) : (
-                    <button 
-                      className="btn btn-outline btn-full btn-lg" 
-                      onClick={handleMarkTaken}
-                      disabled={loading}
-                      style={{ 
-                        fontSize: '1.35rem', 
-                        padding: '18px',
-                        textDecoration: 'underline'
-                      }}
-                    >
-                      {loading ? 'LOGGING TAKEN...' : 'MARK AS TAKEN ANYWAY (MANUAL OVERRIDE)'}
+                    <button className="btn btn-outline btn-full" onClick={handleMarkTaken} disabled={loading}>
+                      {loading ? 'Saving...' : 'Mark as taken anyway'}
                     </button>
                   )}
-
-                  <button className="btn btn-outline btn-full" onClick={reset} style={{ fontSize: '1.2rem', padding: '14px' }}>
-                    <RotateCcw size={18} color="#000000" style={{ marginRight: 6 }} /> CHECK AGAIN
+                  <button className="btn btn-ghost btn-full" onClick={reset}>
+                    <RotateCcw size={15} /> Try again
                   </button>
                 </div>
               </div>

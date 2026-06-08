@@ -104,7 +104,7 @@ export default function PatientsPage() {
               : 'Not provided';
 
             return (
-              <div key={patient._id} className="card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: 20, transition: 'transform 0.2s, box-shadow 0.2s' }}>
+              <div key={patient._id} className="card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: 20 }}>
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
                     <div style={{

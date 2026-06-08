@@ -102,102 +102,65 @@ export default function DashboardPage() {
   };
 
   return (
-    <AppShell title={isViewingAsDoctor ? `Patient: ${patientName || 'Patient'}` : "My Dashboard"}>
+    <AppShell title={isViewingAsDoctor ? `Patient: ${patientName || 'Patient'}` : "Dashboard"}>
       {isViewingAsDoctor && (
-        <div style={{ marginBottom: 24 }}>
+        <div style={{ marginBottom: 20 }}>
           <Link href="/patients" className="btn btn-outline btn-sm" style={{ display: 'inline-flex', gap: 8 }}>
-            <ArrowLeft size={18} /> BACK TO PATIENTS DIRECTORY
+            <ArrowLeft size={16} /> Back to Patient Directory
           </Link>
         </div>
       )}
 
       {/* Dynamic time-based greeting */}
-      <div className="card" style={{
-        marginBottom: 24,
-        background: '#ffffff',
-        border: '3px solid #000000',
-        padding: '30px',
-      }}>
-        <p style={{ fontSize: '1.25rem', fontWeight: 800, textTransform: 'uppercase', margin: '0 0 8px', color: '#000000' }}>
-          {isViewingAsDoctor ? 'STAFF REVIEW' : new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })}
+      <div className="card" style={{ marginBottom: 24 }}>
+        <p style={{ fontSize: '0.85rem', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--clr-muted)', margin: '0 0 6px 0' }}>
+          {isViewingAsDoctor ? 'Staff Review' : new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })}
         </p>
-        <h2 style={{ fontSize: '2.4rem', fontWeight: 900, margin: 0, color: '#000000', lineHeight: 1.2 }}>
+        <h1 style={{ fontSize: '1.8rem', fontWeight: 600, margin: 0, lineHeight: 1.25 }}>
           {isViewingAsDoctor 
             ? `Dashboard for ${patientName}` 
             : `${getGreeting()}, ${user?.name?.split(' ')[0]}!`}
-        </h2>
-        <p style={{ color: '#000000', fontSize: '1.35rem', marginTop: 8, fontWeight: 700 }}>
+        </h1>
+        <p style={{ fontSize: '1.05rem', marginTop: 6, color: 'var(--clr-muted)' }}>
           {isViewingAsDoctor 
             ? `Reviewing patient's scheduled doses.` 
             : upcoming.length > 0 
-              ? `${upcoming.length} medicine${upcoming.length > 1 ? 's' : ''} left today.`
-              : `All medicines taken for today.`}
+              ? `You have ${upcoming.length} medicine${upcoming.length > 1 ? 's' : ''} left to take today.`
+              : `You have completed your medication schedule for today.`}
         </p>
       </div>
 
-      {/* Helper text and text-to-speech for elderly users */}
-      {!isViewingAsDoctor && (
-        <div style={{
-          marginBottom: 32,
-          padding: '24px',
-          border: '3px dashed #000000',
-          background: '#ffffff',
-          borderRadius: '8px',
-        }}>
-          <p style={{ fontSize: '1.25rem', fontWeight: 800, margin: '0 0 16px 0', lineHeight: 1.6, color: '#000000' }}>
-            Tap the button below when you take a pill, or tap the microphone to speak to us.
-          </p>
-          <button 
-            onClick={speakDashboardSummary}
-            className="btn btn-primary"
-            style={{ 
-              display: 'inline-flex', 
-              gap: 12, 
-              width: '100%', 
-              fontSize: '2.0rem', 
-              padding: '24px 32px', 
-              border: '5px solid #000000',
-              borderRadius: '8px',
-              height: 'auto',
-              lineHeight: 1.2
-            }}
-          >
-            <Volume2 size={36} color="#ffffff" style={{ flexShrink: 0 }} /> HEAR SCHEDULE
-          </button>
+      <div className="stat-grid" style={{ marginBottom: 32 }}>
+        <div className="stat-card">
+          <div className="stat-value">{upcoming.length}</div>
+          <div className="stat-label">To Take Today</div>
         </div>
-      )}
-
-      <div className="stat-grid" style={{ marginBottom: 36 }}>
-        <div className="stat-card" style={{ border: '3px solid #000000', padding: '24px' }}>
-          <div className="stat-value" style={{ fontSize: '3rem' }}>{upcoming.length}</div>
-          <div className="stat-label" style={{ fontSize: '1.1rem', fontWeight: 'bold' }}>To Take Today</div>
+        <div className="stat-card">
+          <div className="stat-value">{completed.length}</div>
+          <div className="stat-label">Already Taken</div>
         </div>
-        <div className="stat-card" style={{ border: '3px solid #000000', padding: '24px' }}>
-          <div className="stat-value" style={{ fontSize: '3rem' }}>{completed.length}</div>
-          <div className="stat-label" style={{ fontSize: '1.1rem', fontWeight: 'bold' }}>Already Taken</div>
+        <div className="stat-card">
+          <div className="stat-value">{missed.length}</div>
+          <div className="stat-label">Missed Today</div>
         </div>
-        <div className="stat-card" style={{ border: '3px solid #000000', padding: '24px' }}>
-          <div className="stat-value" style={{ fontSize: '3rem' }}>{missed.length}</div>
-          <div className="stat-label" style={{ fontSize: '1.1rem', fontWeight: 'bold' }}>Missed Today</div>
-        </div>
-        <div className="stat-card" style={{ border: '3px solid #000000', padding: '24px' }}>
-          <div className="stat-value" style={{ fontSize: '3rem' }}>{recentAlerts.length}</div>
-          <div className="stat-label" style={{ fontSize: '1.1rem', fontWeight: 'bold' }}>Active Alerts</div>
+        <div className="stat-card">
+          <div className="stat-value">{recentAlerts.length}</div>
+          <div className="stat-label">Active Alerts</div>
         </div>
       </div>
 
-      <div style={{ marginBottom: 36 }}>
-        <div className="section-title" style={{ fontSize: '1.4rem', borderBottom: '3px solid #000000', paddingBottom: 10, display: 'flex', alignItems: 'center', gap: 10 }}>
-          <Clock size={22} color="#000000" /> TODAY'S MEDICINES
+      <div style={{ marginBottom: 32 }}>
+        <div className="section-title">
+          <Clock size={16} /> Today's Medicines
         </div>
         {upcoming.length === 0 ? (
-          <div className="card" style={{ textAlign: 'center', padding: 48, border: '3px dashed #000000' }}>
-            <Pill size={48} style={{ marginBottom: 16, margin: '0 auto', color: '#000000' }} />
-            <p style={{ fontSize: '1.5rem', fontWeight: 800, color: '#000000' }}>No medicines left</p>
-            <p style={{ fontSize: '1.2rem', marginTop: 8 }}>You are all done!</p>
+          <div className="card" style={{ textAlign: 'center', padding: 48, border: '1px dashed var(--clr-border)', boxShadow: 'none' }}>
+            <Pill size={36} style={{ marginBottom: 12, margin: '0 auto', color: 'var(--clr-subtle)' }} />
+            <h3 style={{ margin: 0, fontWeight: 500 }}>No medicines left</h3>
+            <p style={{ marginTop: 4 }}>You are all done for today.</p>
           </div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {upcoming.map(log => (
               <MedicineCard 
                 key={log._id} 
@@ -211,22 +174,22 @@ export default function DashboardPage() {
       </div>
 
       {missed.length > 0 && (
-        <div style={{ marginBottom: 36 }}>
-          <div className="section-title" style={{ fontSize: '1.4rem', color: '#000000', borderBottom: '3px solid #000000', paddingBottom: 10, display: 'flex', alignItems: 'center', gap: 10 }}>
-            <XCircle size={22} color="#000000" /> MISSED TODAY
+        <div style={{ marginBottom: 32 }}>
+          <div className="section-title">
+            <XCircle size={16} /> Missed Today
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {missed.map(log => <MedicineCard key={log._id} log={log} status="missed" showActions={!isViewingAsDoctor} onTake={() => markTaken(log._id)} />)}
           </div>
         </div>
       )}
 
       {completed.length > 0 && (
-        <div style={{ marginBottom: 36 }}>
-          <div className="section-title" style={{ fontSize: '1.4rem', color: '#000000', borderBottom: '3px solid #000000', paddingBottom: 10, display: 'flex', alignItems: 'center', gap: 10 }}>
-            <CheckCircle2 size={22} color="#000000" /> TAKEN TODAY
+        <div style={{ marginBottom: 32 }}>
+          <div className="section-title">
+            <CheckCircle2 size={16} /> Taken Today
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {completed.map(log => <MedicineCard key={log._id} log={log} status="taken" />)}
           </div>
         </div>
@@ -239,23 +202,16 @@ export default function DashboardPage() {
           alignItems: 'center', 
           justifyContent: 'space-between', 
           flexWrap: 'wrap', 
-          gap: 20,
-          background: '#ffffff',
-          border: '3px solid #000000',
-          padding: '24px 30px',
-          marginBottom: 36,
+          gap: 16,
         }}>
-          <div style={{ flex: '1 1 300px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-              <Shield size={22} color="#000000" />
-              <span style={{ fontWeight: 800, fontSize: '1.35rem', color: '#000000' }}>Check Your Pill</span>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <Shield size={18} />
+              <h3 style={{ margin: 0, fontWeight: 600 }}>Pill Verification</h3>
             </div>
-            <p style={{ color: '#000000', fontSize: '1.15rem', margin: 0, lineHeight: 1.5 }}>
-              Use your camera to check if you have the right pill.
-            </p>
           </div>
-          <Link href="/verify" className="btn btn-primary" style={{ padding: '14px 28px', fontSize: '1.2rem' }}>
-            USE CAMERA
+          <Link href="/verify" className="btn btn-primary">
+            Verify Now
           </Link>
         </div>
       )}

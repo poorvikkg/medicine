@@ -8,7 +8,7 @@ import toast from 'react-hot-toast';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 import { Printer } from 'lucide-react';
 
-const COLORS = { taken: '#10b981', missed: '#e11d48' };
+const COLORS = { taken: '#000000', missed: '#ffffff' };
 
 export default function AnalyticsPage() {
   const { user, loading } = useAuth();
@@ -43,7 +43,7 @@ export default function AnalyticsPage() {
     : [];
 
   const adherence = analytics?.adherence ?? 0;
-  const adherenceColor = adherence >= 80 ? 'var(--clr-success)' : adherence >= 50 ? 'var(--clr-warning)' : 'var(--clr-danger)';
+  const adherenceColor = '#000000';
 
   return (
     <AppShell title="Reports">
@@ -95,8 +95,8 @@ export default function AnalyticsPage() {
                   <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
                   <Tooltip />
                   <Legend />
-                  <Bar dataKey="taken" name="Taken" fill={COLORS.taken} radius={[3,3,0,0]} />
-                  <Bar dataKey="missed" name="Missed" fill={COLORS.missed} radius={[3,3,0,0]} />
+                  <Bar dataKey="taken" name="Taken" fill={COLORS.taken} stroke="#000000" strokeWidth={2} radius={[3, 3, 0, 0]} />
+                  <Bar dataKey="missed" name="Missed" fill={COLORS.missed} stroke="#000000" strokeWidth={2} radius={[3, 3, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             )}
@@ -110,7 +110,7 @@ export default function AnalyticsPage() {
                   <Pie data={pieData} cx="50%" cy="50%" outerRadius={75} dataKey="value"
                     label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}>
                     {pieData.map((_, i) => (
-                      <Cell key={i} fill={i === 0 ? COLORS.taken : COLORS.missed} />
+                      <Cell key={i} fill={i === 0 ? COLORS.taken : COLORS.missed} stroke="#000000" strokeWidth={2} />
                     ))}
                   </Pie>
                   <Tooltip />
@@ -126,7 +126,7 @@ export default function AnalyticsPage() {
                 {Object.entries(analytics.perMedicine).map(([name, v]) => {
                   const total = v.taken + v.missed;
                   const pct = total > 0 ? Math.round((v.taken / total) * 100) : 0;
-                  const color = pct >= 80 ? 'var(--clr-success)' : 'var(--clr-danger)';
+                  const color = '#000000';
                   return (
                     <div key={name}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>

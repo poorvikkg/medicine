@@ -86,12 +86,7 @@ export default function LogsPage() {
       ) : logs.length === 0 ? (
         <div className="card" style={{ textAlign: 'center', padding: 48, color: 'var(--clr-muted)' }}>
           <ClipboardList size={40} style={{ opacity: 0.2, marginBottom: 12, margin: '0 auto' }} />
-          <p style={{ fontWeight: 600 }}>No history found</p>
-          <p style={{ fontSize: '0.88rem', marginTop: 4 }}>
-            {filter === 'all' 
-              ? 'Your medication history and status updates will appear here.' 
-              : `No doses marked as ${filter} yet.`}
-          </p>
+          <p style={{ fontWeight: 600, marginTop: 12 }}>No records found</p>
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>

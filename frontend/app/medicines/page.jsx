@@ -75,26 +75,6 @@ export default function MedicinesPage() {
     return matchesSearch && matchesTime && matchesForm;
   });
 
-  const speakPrescriptions = () => {
-    if (typeof window === 'undefined' || !window.speechSynthesis) return;
-    window.speechSynthesis.cancel();
-    
-    let summary = `You have ${medicines.length} scheduled medicines in your list. `;
-    if (medicines.length > 0) {
-      summary += medicines.map((med, idx) => {
-        const scheduleStr = med.schedule?.map(slot => `${slot.time} in the ${slot.label}`).join(', ') || '';
-        return `Number ${idx + 1}: ${med.name}. Dose is ${med.dosage}. Take at: ${scheduleStr}. ${med.instructions ? 'Instructions: ' + med.instructions : ''}.`;
-      }).join(' ');
-    } else {
-      summary += 'You currently have no medicines listed in your schedule.';
-    }
-    
-    const u = new SpeechSynthesisUtterance(summary);
-    u.lang = 'en-IN';
-    u.rate = 0.85; // Slower speech rate for better clarity.
-    window.speechSynthesis.speak(u);
-  };
-
   return (
     <AppShell title={patientId ? `Regimen for ${patientName || 'Patient'}` : "My Medicines"}>
       {patientId && (
@@ -104,30 +84,6 @@ export default function MedicinesPage() {
           </Link>
         </div>
       )}
-
-      {/* Button to read the entire prescription list out loud */}
-      <div style={{ marginBottom: 24, padding: '20px', border: '3px dashed #000000', borderRadius: '8px' }}>
-        <p style={{ fontSize: '1.2rem', fontWeight: 'bold', margin: '0 0 14px 0', color: '#000000' }}>
-          Hear your medicine list out loud.
-        </p>
-        <button 
-          onClick={speakPrescriptions}
-          className="btn btn-primary"
-          style={{ 
-            display: 'inline-flex', 
-            gap: 12, 
-            width: '100%', 
-            fontSize: '2.0rem', 
-            padding: '24px 32px', 
-            border: '5px solid #000000',
-            borderRadius: '8px',
-            height: 'auto',
-            lineHeight: 1.2
-          }}
-        >
-          <Volume2 size={36} color="#ffffff" style={{ flexShrink: 0 }} /> HEAR MEDICINES
-        </button>
-      </div>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
         <p style={{ color: 'var(--clr-muted)', fontSize: '0.9rem' }}>
@@ -147,7 +103,7 @@ export default function MedicinesPage() {
           <input
             type="text"
             className="form-input"
-            placeholder="Search by medicine or generic name..."
+            placeholder="Search medicines..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             style={{ paddingLeft: 40 }}
@@ -191,16 +147,12 @@ export default function MedicinesPage() {
       ) : medicines.length === 0 ? (
         <div className="card" style={{ textAlign: 'center', padding: 48, color: 'var(--clr-muted)' }}>
           <Pill size={40} style={{ opacity: 0.2, marginBottom: 12, margin: '0 auto' }} />
-          <p style={{ fontWeight: 600 }}>No medicines scheduled</p>
-          <p style={{ fontSize: '0.88rem', marginTop: 4 }}>
-            {isDoctor ? 'Add a medicine to get started.' : 'Your doctor will add medicines to your schedule.'}
-          </p>
+          <p style={{ fontWeight: 600, marginTop: 12 }}>No medicines scheduled</p>
         </div>
       ) : filteredMedicines.length === 0 ? (
         <div className="card" style={{ textAlign: 'center', padding: 48, color: 'var(--clr-muted)' }}>
           <Pill size={40} style={{ opacity: 0.2, marginBottom: 12, margin: '0 auto' }} />
-          <p style={{ fontWeight: 600 }}>No medicines match filter</p>
-          <p style={{ fontSize: '0.88rem', marginTop: 4 }}>Try clearing search or filters.</p>
+          <p style={{ fontWeight: 600, marginTop: 12 }}>No results</p>
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
