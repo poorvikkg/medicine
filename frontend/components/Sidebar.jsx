@@ -45,23 +45,22 @@ export default function Sidebar({ open, onClose }) {
         />
       )}
 
-      <aside className={`sidebar ${open ? 'open' : ''}`} style={{ borderRight: '3px solid #000000', background: '#ffffff' }}>
+      <aside className={`sidebar ${open ? 'open' : ''}`} style={{ background: 'var(--clr-surface)' }}>
         {/* Brand Logo Header */}
-        <div style={{ padding: '24px', borderBottom: '3px solid #000000' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--clr-border)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{
-              width: 38, height: 38, borderRadius: '4px',
-              background: '#ffffff',
-              border: '2.5px solid #000000',
+              width: 32, height: 32, borderRadius: 'var(--radius-sm)',
+              background: 'var(--clr-primary-lt)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
-              <Pill size={20} color="#000000" />
+              <Pill size={16} color="var(--clr-primary)" />
             </div>
             <div style={{ 
-              fontSize: '1.6rem', 
-              fontWeight: 900, 
-              color: '#000000',
-              letterSpacing: '-0.02em',
+              fontSize: '1.25rem', 
+              fontWeight: 600, 
+              color: 'var(--clr-text)',
+              letterSpacing: '-0.01em',
             }}>
               MediCare
             </div>
@@ -69,26 +68,25 @@ export default function Sidebar({ open, onClose }) {
         </div>
 
         {/* Logged in User Section */}
-        <div style={{ padding: '20px 24px', borderBottom: '3px solid #000000' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--clr-border)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{
-              width: 44, height: 44, borderRadius: '50%',
-              background: '#ffffff',
-              border: '2.5px solid #000000',
+              width: 36, height: 36, borderRadius: '50%',
+              background: 'var(--clr-primary-lt)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              color: '#000000', flexShrink: 0,
+              color: 'var(--clr-primary)', flexShrink: 0,
             }}>
-              <User size={22} color="#000000" />
+              <User size={18} />
             </div>
             <div style={{ minWidth: 0 }}>
-              <div style={{ fontWeight: 800, fontSize: '1.15rem', color: '#000000', lineHeight: 1.25, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              <div style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--clr-text)', lineHeight: 1.2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {user?.name}
               </div>
               <div style={{ 
-                fontSize: '0.85rem', 
-                color: '#000000', 
+                fontSize: '0.75rem', 
+                color: 'var(--clr-muted)', 
                 textTransform: 'uppercase',
-                fontWeight: 900,
+                fontWeight: 500,
                 letterSpacing: '0.05em',
                 marginTop: 2
               }}>
@@ -99,7 +97,7 @@ export default function Sidebar({ open, onClose }) {
         </div>
 
         {/* Navigation Items */}
-        <nav style={{ flex: 1, overflowY: 'auto', padding: '16px 0' }}>
+        <nav style={{ flex: 1, overflowY: 'auto', padding: '12px 0' }}>
           {links.map(({ href, label, icon: Icon }) => (
             <Link
               key={href}
@@ -107,31 +105,28 @@ export default function Sidebar({ open, onClose }) {
               className={`nav-item ${pathname === href || pathname.startsWith(href + '/') ? 'active' : ''}`}
               onClick={onClose}
               style={{
-                fontSize: '1.15rem',
-                fontWeight: 'bold',
-                color: '#000000',
+                fontSize: '0.92rem',
+                color: 'var(--clr-text)',
               }}
             >
-              <Icon size={20} strokeWidth={2.5} color="#000000" />
-              {label.toUpperCase()}
+              <Icon size={18} color="currentColor" />
+              {label}
             </Link>
           ))}
         </nav>
 
         {/* Logout Bottom Section */}
-        <div style={{ padding: '16px 24px', borderTop: '3px solid #000000' }}>
+        <div style={{ padding: '16px 24px', borderTop: '1px solid var(--clr-border)' }}>
           <button
-            className="btn btn-outline btn-full"
+            className="btn btn-outline btn-full btn-sm"
             onClick={logout}
             style={{ 
               justifyContent: 'center', 
-              gap: 10, 
-              color: '#000000', 
-              padding: '12px',
+              gap: 8, 
             }}
           >
-            <LogOut size={20} strokeWidth={2.5} color="#000000" />
-            SIGN OUT
+            <LogOut size={16} />
+            Sign out
           </button>
         </div>
       </aside>
