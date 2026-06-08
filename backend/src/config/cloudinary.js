@@ -82,8 +82,19 @@ if (useCloudinary) {
         if (err) return next(err);
         // Transform the local file path to a full URL so controllers work the same way
         if (req.file) {
-          const host = req.get('host') || 'localhost:5000';
-          req.file.path = `${req.protocol}://${host}/uploads/${req.file.filename}`;
+          const host = req.get('host');
+          const protocol = req.protocol;
+          // Use BACKEND_URL if provided, else construct from request headers, falling back to Render URL
+          let fullUrl;
+          if (process.env.BACKEND_URL) {
+            const baseUrl = process.env.BACKEND_URL.replace(/\/$/, '');
+            fullUrl = `${baseUrl}/uploads/${req.file.filename}`;
+          } else if (host) {
+            fullUrl = `${protocol}://${host}/uploads/${req.file.filename}`;
+          } else {
+            fullUrl = `https://medicine-backend-xgoz.onrender.com/uploads/${req.file.filename}`;
+          }
+          req.file.path = fullUrl;
         }
         next();
       });

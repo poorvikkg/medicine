@@ -20,15 +20,42 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Handle 401 globally — clear token & redirect to login
+// Global response interceptor for unified authentication redirects and robust error standardizing
 api.interceptors.response.use(
   (res) => res,
   (error) => {
+    // 1. Handle 401 globally — clear token & redirect to login page
     if (error.response?.status === 401 && typeof window !== 'undefined') {
       localStorage.removeItem('medicare_token');
       localStorage.removeItem('medicare_user');
       window.location.href = '/login';
     }
+
+    // 2. Production-ready error object normalization to prevent UI crashes
+    if (!error.response) {
+      // Network failure, server down, or blocked by browser CORS policy
+      error.response = {
+        status: 0,
+        data: {
+          success: false,
+          message: error.code === 'ECONNABORTED'
+            ? 'The server took too long to respond. Please check your connection.'
+            : 'Unable to connect to the server. Please verify the backend is running and CORS is configured.',
+        },
+      };
+    } else if (!error.response.data || typeof error.response.data !== 'object') {
+      // Server returned a response, but it is not valid JSON
+      error.response.data = {
+        success: false,
+        message: `Server returned an error (${error.response.status}). Please try again.`,
+      };
+    } else if (!error.response.data.message) {
+      // Standardize missing error messages
+      error.response.data.message = 'An unexpected server error occurred.';
+    }
+
+    console.error(`[API Error] ${error.config?.method?.toUpperCase()} ${error.config?.url} [Status ${error.response.status}]:`, error.response.data.message);
+
     return Promise.reject(error);
   }
 );
