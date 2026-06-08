@@ -1,6 +1,13 @@
 import axios from 'axios';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+// Base API URL configuration: Support VITE_API_URL, NEXT_PUBLIC_API_URL, and fallback
+let API_URL = process.env.VITE_API_URL || process.env.NEXT_PUBLIC_API_URL || 'https://medicine-backend-xgoz.onrender.com';
+
+// Normalize the base URL by stripping any trailing slash or "/api" suffix
+// so that relative paths (which all start with "/api/...") construct correctly.
+if (API_URL) {
+  API_URL = API_URL.replace(/\/$/, '').replace(/\/api$/, '');
+}
 
 const api = axios.create({
   baseURL: API_URL,
@@ -62,49 +69,54 @@ api.interceptors.response.use(
 
 // ─── Auth ────────────────────────────────────────────────────────────────────
 export const authAPI = {
-  register: (data) => api.post('/auth/register', data),
-  login: (data) => api.post('/auth/login', data),
-  getMe: () => api.get('/auth/me'),
-  updateProfile: (data) => api.put('/auth/profile', data),
-  updateFCMToken: (fcmToken) => api.put('/auth/fcm-token', { fcmToken }),
+  register: (data) => api.post('/api/auth/register', data),
+  login: (data) => api.post('/api/auth/login', data),
+  getMe: () => api.get('/api/auth/me'),
+  updateProfile: (data) => api.put('/api/auth/profile', data),
+  updateFCMToken: (fcmToken) => api.put('/api/auth/fcm-token', { fcmToken }),
 };
 
 // ─── Users ────────────────────────────────────────────────────────────────────
 export const userAPI = {
-  getPatients: (params) => api.get('/users/patients', { params }),
+  getPatients: (params) => api.get('/api/users/patients', { params }),
 };
 
 // ─── Medicines ───────────────────────────────────────────────────────────────
 export const medicineAPI = {
-  add: (formData) => api.post('/medicines', formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
-  getForPatient: (patientId) => api.get(`/medicines/patient/${patientId}`),
-  getToday: (patientId) => api.get(`/medicines/today/${patientId}`),
-  getOne: (id) => api.get(`/medicines/${id}`),
-  update: (id, formData) => api.put(`/medicines/${id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
-  delete: (id) => api.delete(`/medicines/${id}`),
+  add: (formData) => api.post('/api/medicines', formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
+  getForPatient: (patientId) => api.get(`/api/medicines/patient/${patientId}`),
+  getToday: (patientId) => api.get(`/api/medicines/today/${patientId}`),
+  getOne: (id) => api.get(`/api/medicines/${id}`),
+  update: (id, formData) => api.put(`/api/medicines/${id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
+  delete: (id) => api.delete(`/api/medicines/${id}`),
 };
 
 // ─── Logs ────────────────────────────────────────────────────────────────────
 export const logAPI = {
-  getAll: (params) => api.get('/logs', { params }),
-  markTaken: (logId) => api.put(`/logs/${logId}/take`),
-  snooze: (logId) => api.put(`/logs/${logId}/snooze`),
+  getAll: (params) => api.get('/api/logs', { params }),
+  markTaken: (logId) => api.put(`/api/logs/${logId}/take`),
+  snooze: (logId) => api.put(`/api/logs/${logId}/snooze`),
   verify: (logId, formData) =>
-    api.post(`/logs/${logId}/verify`, formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
+    api.post(`/api/logs/${logId}/verify`, formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
 };
 
 // ─── Dashboard & Analytics ───────────────────────────────────────────────────
 export const dashboardAPI = {
-  getDashboard: (patientId) => api.get(`/dashboard/${patientId}`),
-  getAnalytics: (patientId, days = 7) => api.get(`/analytics/${patientId}`, { params: { days } }),
+  getDashboard: (patientId) => api.get(`/api/dashboard/${patientId}`),
+  getAnalytics: (patientId, days = 7) => api.get(`/api/analytics/${patientId}`, { params: { days } }),
 };
 
 // ─── Notifications ───────────────────────────────────────────────────────────
 export const notificationAPI = {
-  getAll: (params) => api.get('/notifications', { params }),
-  markRead: (ids) => api.put('/notifications/read', { ids }),
-  getFamilyAlerts: () => api.get('/notifications/family-alerts'),
-  resolveAlert: (alertId) => api.put(`/notifications/family-alerts/${alertId}/resolve`),
+  getAll: (params) => api.get('/api/notifications', { params }),
+  markRead: (ids) => api.put('/api/notifications/read', { ids }),
+  getFamilyAlerts: () => api.get('/api/notifications/family-alerts'),
+  resolveAlert: (alertId) => api.put(`/api/notifications/family-alerts/${alertId}/resolve`),
+};
+
+// ─── Cron ────────────────────────────────────────────────────────────────────
+export const cronAPI = {
+  triggerReminders: () => api.post('/api/cron/reminders'),
 };
 
 export default api;
